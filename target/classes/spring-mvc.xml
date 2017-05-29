@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+         http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd
+            http://www.springframework.org/schema/aop  
+            http://www.springframework.org/schema/aop/spring-aop.xsd ">
+
+	<context:component-scan base-package="com.*" />
+
+	<!-- 注解请求映射 -->
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<!-- 日志拦截器，这是你自定义的拦截器
+				<ref bean="logNDCInteceptor" />   
+				 -->
+				   <!-- RequestHelper拦截器，这是你自定义的拦截器
+				<ref bean="myRequestHelperInteceptor" />
+				    -->
+				    <!-- 
+				<ref bean="myPermissionsInteceptor" />  权限拦截器，这是你自定义的拦截器 -->
+				 <!-- 
+				<ref bean="myUserInfoInteceptor" /> 用户信息拦截器，这是你自定义的拦截器 -->
+			</list>
+		</property>
+	</bean>
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<ref bean="byteArray_hmc" />
+				<ref bean="string_hmc" />
+				<ref bean="resource_hmc" />
+				<ref bean="source_hmc" />
+				<ref bean="xmlAwareForm_hmc" />
+				<ref bean="jaxb2RootElement_hmc" />
+				<ref bean="jackson_hmc" />
+			</list>
+		</property>
+	</bean>
+	<!-- 处理.. -->
+	<bean id="byteArray_hmc"
+		class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+	<!-- 处理.. -->
+	<bean id="string_hmc"
+		class="org.springframework.http.converter.StringHttpMessageConverter" />
+	<!-- 处理.. -->
+	<bean id="resource_hmc"
+		class="org.springframework.http.converter.ResourceHttpMessageConverter" />
+	<!-- 处理.. -->
+	<bean id="source_hmc"
+		class="org.springframework.http.converter.xml.SourceHttpMessageConverter" />
+	<!-- 处理.. -->
+	<bean id="xmlAwareForm_hmc"
+		class="org.springframework.http.converter.xml.XmlAwareFormHttpMessageConverter" />
+	<!-- 处理.. -->
+	<bean id="jaxb2RootElement_hmc"
+		class="org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter" />
+	<!-- 处理json -->
+	<bean id="jackson_hmc"
+		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+
+
+	<!-- 视图解释类 -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/webpage/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+
+	<!-- 总错误处理
+	<bean id="exceptionResolver"
+		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="defaultErrorView">
+			<value>/error/error</value>
+		</property>
+		<property name="defaultStatusCode">
+			<value>500</value>
+		</property>
+		<property name="warnLogCategory">
+			<value>org.springframework.web.servlet.handler.SimpleMappingExceptionResolver
+			</value>
+		</property>
+	</bean>
+	 -->
+
+	<!-- 启用spring mvc 注解 <mvc:annotation-driven> <mvc:message-converters> <bean 
+		id="jsonConverter" class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter"> 
+		<property name="supportedMediaTypes"> <list> <value>text/html;charset=UTF-8</value> 
+		</list> </property> </bean> </mvc:message-converters> </mvc:annotation-driven> -->
+
+	<!-- springmvc传json值时的乱码解决 -->
+	<mvc:annotation-driven>
+		<mvc:message-converters>
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>application/json;charset=UTF-8</value>
+					</list>
+				</property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+
+
+
+</beans> 
+ 
