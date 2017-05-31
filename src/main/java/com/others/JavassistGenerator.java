@@ -1,8 +1,11 @@
 package com.others;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+
+import com.alibaba.fastjson.JSON;
 
 import javassist.CannotCompileException;
 import javassist.ClassPool;
@@ -25,7 +28,7 @@ public class JavassistGenerator {
 
 	public static void main(String[] args) throws CannotCompileException, NotFoundException, InstantiationException,
 			IllegalAccessException, ClassNotFoundException, SecurityException, NoSuchMethodException,
-			IllegalArgumentException, InvocationTargetException {
+			IllegalArgumentException, InvocationTargetException, IOException {
 		// 创建类
 		ClassPool pool = ClassPool.getDefault();
 		CtClass cls = pool.makeClass("cn.ibm.com.TestClass");
@@ -64,9 +67,11 @@ public class JavassistGenerator {
 		obj = Class.forName("cn.ibm.com.TestClass").getConstructor(String.class).newInstance("Liu Jian");
 		getter = obj.getClass().getMethod("getName");
 		System.out.println(getter.invoke(obj));
-		
-//		TODO
+
+		// TODO
 		System.out.println(obj);
+		System.out.println(JSON.toJSONString(obj));
+		cls.writeFile("D://");
 	}
 
 }
