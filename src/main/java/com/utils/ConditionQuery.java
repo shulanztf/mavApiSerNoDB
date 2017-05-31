@@ -1,4 +1,4 @@
-package com.tuil;
+package com.utils;
 
 import java.util.Scanner;
 

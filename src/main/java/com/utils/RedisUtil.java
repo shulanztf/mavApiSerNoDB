@@ -1,4 +1,4 @@
-package com.tuil;
+package com.utils;
 
 public class RedisUtil {
 	// //Redis服务器IP
