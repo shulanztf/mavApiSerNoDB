@@ -18,6 +18,7 @@
 		<redis.version>1.7.5.RELEASE</redis.version>
 		<spring.version>3.2.18.RELEASE</spring.version>
 		<spring.security.version>3.2.10.RELEASE</spring.security.version>
+		<cxf.version>3.0.2</cxf.version>
 	</properties>
 
 	<repositories>
@@ -102,9 +103,13 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
-		<!-- <dependency> <groupId>org.springframework</groupId> <artifactId>spring-asm</artifactId> 
-			<version>3.1.4.RELEASE</version> <type>jar</type> <scope>compile</scope> 
-			</dependency> -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-asm</artifactId>
+			<version>3.1.4.RELEASE</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aspects</artifactId>
@@ -431,7 +436,7 @@
 		</dependency>
 		<!-- pdf转换包 end -->
 
-
+		<!-- redis start -->
 		<dependency>
 			<groupId>org.redisson</groupId>
 			<artifactId>redisson</artifactId>
@@ -447,6 +452,19 @@
 		<!-- hbase start <dependency> <groupId>org.apache.hbase</groupId> <artifactId>hbase</artifactId> 
 			<version>0.98.23</version> </dependency> -->
 		<!-- hbase end -->
+
+		<!-- 杂类 start -->
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-jaxws</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-transports-http</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<!-- 杂类 end -->
 
 	</dependencies>
 
