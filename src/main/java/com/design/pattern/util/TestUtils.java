@@ -9,6 +9,8 @@ import com.design.pattern.adapter.impl.Adapter;
 import com.design.pattern.adapter.impl.SourceSub1;
 import com.design.pattern.adapter.impl.SourceSub2;
 import com.design.pattern.builder.Builder;
+import com.design.pattern.decorator.impl.Source;
+import com.design.pattern.proxy.impl.Proxy;
 
 /**
  * 
@@ -28,7 +30,34 @@ public class TestUtils {
 	 */
 	public static void main(String[] args) {
 		TestUtils tu = new TestUtils();
-		tu.checkAdapter();
+		tu.checkProxy();
+	}
+
+	/**
+	 * 代理模式（Proxy）
+	 * 
+	 * @see 代理模式的应用场景： 如果已有的方法在使用的时候需要对原有的方法进行改进，此时有两种办法：
+	 *      1、修改原有的方法来适应。这样违反了“对扩展开放，对修改关闭”的原则。
+	 *      2、就是采用一个代理类调用原有的方法，且对产生的结果进行控制。这种方法就是代理模式。
+	 *      使用代理模式，可以将功能划分的更加清晰，有助于后期维护！ void
+	 */
+	public void checkProxy() {
+		com.design.pattern.proxy.Sourceable source = new Proxy();
+		source.method();
+	}
+
+	/**
+	 * 装饰模式（Decorator）
+	 * 
+	 * @see 顾名思义，装饰模式就是给一个对象增加一些新的功能，而且是动态的，要求装饰对象和被装饰对象实现同一个接口，装饰对象持有被装饰对象的实例，
+	 *      关系图如下： 装饰器模式的应用场景： 1、需要扩展一个类的功能。
+	 *      2、动态的为一个对象增加功能，而且还能动态撤销。（继承不能做到这一点，继承的功能是静态的，不能动态增删。）
+	 *      缺点：产生过多相似的对象，不易排错！ void
+	 */
+	public void checkDecorator() {
+		com.design.pattern.decorator.Sourceable source = new Source();
+		com.design.pattern.decorator.Sourceable obj = new com.design.pattern.decorator.impl.Decorator(source);
+		obj.method();
 	}
 
 	/**
@@ -40,9 +69,9 @@ public class TestUtils {
 	 *      将Source的功能扩展到Targetable里，看代码： void
 	 */
 	public void checkAdapter() {
-//		Targetable target = new Adapter();
-//		target.method1();
-//		target.method2();
+		Targetable target = new Adapter();
+		target.method1();
+		target.method2();
 
 		Sourceable source1 = new SourceSub1();
 		Sourceable source2 = new SourceSub2();
