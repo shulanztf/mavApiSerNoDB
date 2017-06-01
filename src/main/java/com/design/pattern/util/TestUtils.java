@@ -10,6 +10,7 @@ import com.design.pattern.adapter.impl.SourceSub1;
 import com.design.pattern.adapter.impl.SourceSub2;
 import com.design.pattern.builder.Builder;
 import com.design.pattern.decorator.impl.Source;
+import com.design.pattern.facade.Computer;
 import com.design.pattern.proxy.impl.Proxy;
 
 /**
@@ -31,6 +32,18 @@ public class TestUtils {
 	public static void main(String[] args) {
 		TestUtils tu = new TestUtils();
 		tu.checkProxy();
+	}
+
+	/**
+	 * facade
+	 * 
+	 * @see 外观模式是为了解决类与类之家的依赖关系的，像spring一样，可以将类和类之间的关系配置到配置文件中，
+	 *      而外观模式就是将他们的关系放在一个Facade类中， 降低了类类之间的耦合度，该模式中没有涉及到接口。 void
+	 */
+	public void checkFacade() {
+		Computer computer = new Computer();
+		computer.startup();
+		computer.shutdown();
 	}
 
 	/**
