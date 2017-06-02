@@ -14,6 +14,10 @@ import com.design.pattern.builder.Builder;
 import com.design.pattern.decorator.impl.Source;
 import com.design.pattern.facade.Computer;
 import com.design.pattern.proxy.impl.Proxy;
+import com.design.pattern.strategy.ICalculator;
+import com.design.pattern.strategy.impl.Minus;
+import com.design.pattern.strategy.impl.Multiply;
+import com.design.pattern.strategy.impl.Plus;
 
 /**
  * 
@@ -33,7 +37,44 @@ public class TestUtils {
 	 */
 	public static void main(String[] args) {
 		TestUtils tu = new TestUtils();
-		tu.checkBridge();
+		tu.checkTemplateMethod();
+	}
+
+	/**
+	 * 模板方法模式（Template Method）
+	 * 
+	 * @see 解释一下模板方法模式，就是指：一个抽象类中，有一个主方法，再定义1...n个方法，可以是抽象的，也可以是实际的方法，定义一个类，
+	 *      继承该抽象类，重写抽象方法，通过调用抽象类，实现对子类的调用，先看个关系图 void
+	 */
+	public void checkTemplateMethod() {
+		String exp = "8+8";
+		com.design.pattern.template.method.AbstractCalculator cal = new com.design.pattern.template.method.Plus();
+		int result = cal.calculate(exp, "\\+");
+		System.out.println(result);
+	}
+
+	/**
+	 * 策略模式（strategy）
+	 * 
+	 * @see 策略模式定义了一系列算法，并将每个算法封装起来，使他们可以相互替换，且算法的变化不会影响到使用算法的客户。需要设计一个接口，
+	 *      为一系列实现类提供统一的方法，多个实现类实现该接口，设计一个抽象类（可有可无，属于辅助类），提供辅助函数，关系图如下：
+	 *      策略模式的决定权在用户，系统本身提供不同算法的实现，新增或者删除算法，对各种算法做封装。因此，策略模式多用在算法决策系统中，
+	 *      外部用户只需要决定用哪个算法即可。
+	 * 
+	 *      void
+	 */
+	public void checkStrategy() {
+		String exp = "2+8";
+		ICalculator calPlus = new Plus();
+		System.out.println(calPlus.calculate(exp));
+
+		String exp1 = "2-8";
+		ICalculator calMinus = new Minus();
+		System.out.println(calMinus.calculate(exp1));
+
+		String exp2 = "2*8";
+		ICalculator calMultiply = new Multiply();
+		System.out.println(calMultiply.calculate(exp2));
 	}
 
 	/**
