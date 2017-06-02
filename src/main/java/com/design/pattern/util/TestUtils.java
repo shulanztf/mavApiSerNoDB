@@ -21,10 +21,16 @@ import com.design.pattern.facade.Computer;
 import com.design.pattern.memento.Original;
 import com.design.pattern.memento.Storage;
 import com.design.pattern.proxy.impl.Proxy;
+import com.design.pattern.state.Context;
+import com.design.pattern.state.State;
 import com.design.pattern.strategy.ICalculator;
 import com.design.pattern.strategy.impl.Minus;
 import com.design.pattern.strategy.impl.Multiply;
 import com.design.pattern.strategy.impl.Plus;
+import com.design.pattern.visitor.Subject;
+import com.design.pattern.visitor.Visitor;
+import com.design.pattern.visitor.impl.MySubject;
+import com.design.pattern.visitor.impl.MyVisitor;
 
 /**
  * 
@@ -44,7 +50,44 @@ public class TestUtils {
 	 */
 	public static void main(String[] args) {
 		TestUtils tu = new TestUtils();
-		tu.checkMemento();
+		tu.checkVisitor();
+	}
+
+	/**
+	 * 访问者模式（Visitor）
+	 * 
+	 * @see 访问者模式就是一种分离对象数据结构与行为的方法，通过这种分离，可达到为一个被访问者动态添加新的操作而无需做其它的修改的效果。
+	 * @see 该模式适用场景：如果我们想为一个现有的类增加新功能，不得不考虑几个事情：
+	 * @see 1、新功能会不会与现有功能出现兼容性问题？
+	 * @see 2、以后会不会再需要添加？
+	 * @see 3、如果类不允许修改代码怎么办？ void
+	 */
+	public void checkVisitor() {
+		// 一个Visitor类，存放要访问的对象(Subject)
+		Visitor visitor = new MyVisitor();
+		// Subject类，accept方法，接受将要访问它的对象，getSubject()获取将要被访问的属性，
+		Subject subject = new MySubject();
+		subject.accept(visitor);
+	}
+
+	/**
+	 * 状态模式（State）
+	 * 
+	 * @see 核心思想就是：当对象的状态改变时，同时改变其行为，很好理解！就拿QQ来说，有几种状态，在线、隐身、忙碌等，每个状态对应不同的操作，
+	 *      而且你的好友也能看到你的状态， 所以，状态模式就两点：1、可以通过改变状态来获得不同的行为。2、你的好友能同时看到你的变化。看图：
+	 *      State类是个状态类，Context类可以实现切换，我们来看看代码： {@link} void
+	 */
+	public void checkState() {
+		State state = new State();
+		Context context = new Context(state);
+
+		// 设置第一种状态
+		state.setValue("state1");
+		context.method();
+
+		// 设置第二种状态
+		state.setValue("state2");
+		context.method();
 	}
 
 	/**
