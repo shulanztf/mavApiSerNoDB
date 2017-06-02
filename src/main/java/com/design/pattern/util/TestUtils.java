@@ -11,6 +11,7 @@ import com.design.pattern.adapter.impl.SourceSub2;
 import com.design.pattern.bridge.impl.Bridge;
 import com.design.pattern.bridge.impl.MyBridge;
 import com.design.pattern.builder.Builder;
+import com.design.pattern.chain.responsibility.impl.MyHandler;
 import com.design.pattern.decorator.impl.Source;
 import com.design.pattern.facade.Computer;
 import com.design.pattern.proxy.impl.Proxy;
@@ -37,7 +38,35 @@ public class TestUtils {
 	 */
 	public static void main(String[] args) {
 		TestUtils tu = new TestUtils();
-		tu.checkObserver();
+		tu.checkChainResponsibility();
+	}
+
+	/**
+	 * 责任链模式（Chain of Responsibility）
+	 * 
+	 * void
+	 */
+	public void checkChainResponsibility() {
+		MyHandler h1 = new MyHandler("h1");
+		MyHandler h2 = new MyHandler("h2");
+		MyHandler h3 = new MyHandler("h3");
+		h1.setHandler(h2);
+		h2.setHandler(h3);
+		h1.operator();
+	}
+
+	/**
+	 * 迭代子模式（Iterator）
+	 * 
+	 * void
+	 */
+	public void checkIterator() {
+		com.design.pattern.iterator.Collection collection = new com.design.pattern.iterator.impl.MyCollection();
+		com.design.pattern.iterator.Iterator it = collection.iterator();
+
+		while (it.hasNext()) {
+			System.out.println(it.next());
+		}
 	}
 
 	/**
