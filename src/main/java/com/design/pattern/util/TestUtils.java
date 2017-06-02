@@ -37,7 +37,19 @@ public class TestUtils {
 	 */
 	public static void main(String[] args) {
 		TestUtils tu = new TestUtils();
-		tu.checkTemplateMethod();
+		tu.checkObserver();
+	}
+
+	/**
+	 * 观察者模式（Observer）
+	 * 
+	 * @see 简单来讲就一句话：当一个对象变化时，其它依赖该对象的对象都会收到通知，并且随着变化！对象之间是一种一对多的关系。 void
+	 */
+	public void checkObserver() {
+		com.design.pattern.observer.Subject sub = new com.design.pattern.observer.impl.MySubject();
+		sub.add(new com.design.pattern.observer.impl.Observer1());
+		sub.add(new com.design.pattern.observer.impl.Observer2());
+		sub.operation();
 	}
 
 	/**
