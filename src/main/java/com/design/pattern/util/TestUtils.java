@@ -12,8 +12,14 @@ import com.design.pattern.bridge.impl.Bridge;
 import com.design.pattern.bridge.impl.MyBridge;
 import com.design.pattern.builder.Builder;
 import com.design.pattern.chain.responsibility.impl.MyHandler;
+import com.design.pattern.command.Command;
+import com.design.pattern.command.impl.Invoker;
+import com.design.pattern.command.impl.MyCommand;
+import com.design.pattern.command.impl.Receiver;
 import com.design.pattern.decorator.impl.Source;
 import com.design.pattern.facade.Computer;
+import com.design.pattern.memento.Original;
+import com.design.pattern.memento.Storage;
 import com.design.pattern.proxy.impl.Proxy;
 import com.design.pattern.strategy.ICalculator;
 import com.design.pattern.strategy.impl.Minus;
@@ -38,7 +44,45 @@ public class TestUtils {
 	 */
 	public static void main(String[] args) {
 		TestUtils tu = new TestUtils();
-		tu.checkChainResponsibility();
+		tu.checkMemento();
+	}
+
+	/**
+	 * 备忘录模式（Memento）
+	 * 
+	 * @see 主要目的是保存一个对象的某个状态，以便在适当的时候恢复对象，个人觉得叫备份模式更形象些，通俗的讲下：
+	 *      假设有原始类A，A中有各种属性，A可以决定需要备份的属性，备忘录类B是用来存储A的一些内部状态，类C呢，就是一个用来存储备忘录的，
+	 *      且只能存储，不能修改等操作。
+	 * @see Original类是原始类，里面有需要保存的属性value及创建一个备忘录类，用来保存value值。
+	 * @see Memento类是备忘录类，
+	 * @see Storage类是存储备忘录的类，持有Memento类的实例，该模式很好理解。 void
+	 */
+	public void checkMemento() {
+		// 创建原始类
+		Original origi = new Original("egg");
+		// 创建备忘录
+		Storage storage = new Storage(origi.createMemento());
+
+		// 修改原始类的状态
+		System.out.println("初始化状态为：" + origi.getValue());
+		origi.setValue("niu");
+		System.out.println("修改后的状态为：" + origi.getValue());
+
+		// 回复原始类的状态
+		origi.restoreMemento(storage.getMemento());
+		System.out.println("恢复后的状态为：" + origi.getValue());
+	}
+
+	/**
+	 * 命令模式（Command）
+	 * 
+	 * void
+	 */
+	public void checkCommand() {
+		Receiver receiver = new Receiver();
+		Command cmd = new MyCommand(receiver);
+		Invoker invoker = new Invoker(cmd);
+		invoker.action("命令模式测试");
 	}
 
 	/**
