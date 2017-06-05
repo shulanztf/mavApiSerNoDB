@@ -20,42 +20,42 @@ import net.sf.json.JSONObject;
 
 /**
  * 
- *@Title:  BootStarpController
- *@Description: BootStarp学习  
- *@Author:Administrator  
- *@Since:2016年9月12日  上午10:46:21
- *@Version:1.1.0
+ * @Title: BootStarpController
+ * @Description: BootStarp学习
+ * @Author:Administrator
+ * @Since:2016年9月12日 上午10:46:21
+ * @Version:1.1.0
  */
 @Controller
 @RequestMapping("/bootStarpController")
 public class BootStarpController {
 	private static final Logger logger = Logger.getLogger(BootStarpController.class);
-	
+
 	/**
-	 * nginx反向代理
+	 * @category nginx反向代理
+	 * @see http://localhost:8080/mav-api-ser/bootStarpController/
+	 *      nginxReversedProxy.do
 	 * @param request
 	 * @param response
 	 * @param model
-	 * @return      
-	 * String      
-	 * @throws
+	 * @return String
 	 */
 	@RequestMapping(value = "/nginxReversedProxy")
 	public String nginxReversedProxy(HttpServletRequest request, HttpServletResponse response, Model model) {
 		try {
-//			model.addAttribute("bs_test", "服务器返回数据");
+			model.addAttribute("bs_test", "服务器返回数据");
 		} catch (Exception e) {
-//			e.printStackTrace();
 			logger.error(e);
 		}
 		return "views/nginxTest1";
 	}
-	
-	
+
 	/**
-	 * http://localhost:8080/mav-api-ser/bootStarpController/toLogin.htm
-	 * @return  
-	 * @Description:
+	 * @see http://localhost:8080/mav-api-ser/bootStarpController/toLogin.do
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return String
 	 */
 	@RequestMapping(value = "/toLogin")
 	public String toLogin(HttpServletRequest request, HttpServletResponse response, Model model) {
@@ -67,20 +67,21 @@ public class BootStarpController {
 		}
 		return "bootstarp/login_bs";
 	}
-	
+
 	/**
-	 * http://localhost:8080/mav-api-ser/bootStarpController/validateLogin.htm
-	 * @return  
+	 * http://localhost:8080/mav-api-ser/bootStarpController/validateLogin.do
+	 * 
+	 * @return
 	 * @Description:
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/validateLogin", method = RequestMethod.POST)
-	public Object validateLogin(HttpServletRequest request, HttpServletResponse response, Model model,
-			String loginObj,String accountNo, String pwd) {
+	public Object validateLogin(HttpServletRequest request, HttpServletResponse response, Model model, String loginObj,
+			String accountNo, String pwd) {
 		JSONObject result = new JSONObject();
 		try {
 			result.put("total", 11);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e);
@@ -90,12 +91,14 @@ public class BootStarpController {
 
 	/**
 	 * 登录验证通过后，跳转至主页
-	 * @return  
+	 * 
+	 * @return
 	 * @Description:
 	 */
-	@RequestMapping(value="successLogin")
+	@RequestMapping(value = "successLogin")
 	public String successLogin(HttpServletRequest request, HttpServletResponse response, Model model) {
 		model.addAttribute("", "");
 		return "";
 	}
+
 }

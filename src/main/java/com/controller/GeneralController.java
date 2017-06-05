@@ -58,20 +58,20 @@ public class GeneralController {
 			// HmAppProductMgEntity entity =
 			// this.generalService.getHmAppProductMg(2L);
 			// System.out.println(entity.getId());
-			System.out.println("好了");
+			logger.info("好了");
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e);
 		}
 		return "index";
 	}
-	
+
 	/**
-	 * bootStarp学习
-	 * @return http://localhost:8080/mavApiSerNoDB/generalController/bootStarpTest.do  
+	 * http://localhost:8080/mavApiSerNoDB/generalController/bootStarpTest.do
+	 * 
 	 * @Description:
 	 */
-	@RequestMapping(value="bootStarpTest")
+	@RequestMapping(value = "bootStarpTest")
 	public String bootStarpTest(HttpServletRequest request, HttpServletResponse response, Model model) {
 		model.addAttribute("bsTest", "bs学习");
 		return "bootstarp/head";
@@ -112,8 +112,8 @@ public class GeneralController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "findList", method = RequestMethod.POST)
-	public Object findList(HttpServletRequest request, HttpServletResponse response, Model model,
-			Integer page, Integer rows) {
+	public Object findList(HttpServletRequest request, HttpServletResponse response, Model model, Integer page,
+			Integer rows) {
 		JSONObject result = new JSONObject();
 		try {
 			List<HmAppProductMgEntity> list = new ArrayList<HmAppProductMgEntity>();
@@ -125,7 +125,7 @@ public class GeneralController {
 			params.put("pageIndex", (page - 1) * rows);
 			result.put("rows", list);
 			result.put("total", 11);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e);
