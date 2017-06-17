@@ -5,29 +5,26 @@ import com.design.pattern.visitor.Visitor;
 
 /**
  * 
- * @Title: MyVisitor
- * @Description:
+ * @Title: VisitorB
+ * @Description:具体访问者VisitorB类
  * @Author: zhaotf
- * @Since:2017年6月2日 下午3:58:43
+ * @Since:2017年6月5日 上午10:09:27
  * @Version:1.0
  */
-public class MyVisitor implements Visitor {
+public class VisitorB implements Visitor {
 
 	@Override
 	public void visit(Subject sub) {
-		System.out.println("visit the subject：" + sub.getSubject());
 	}
 
 	@Override
 	public void visit(NodeA node) {
-		// TODO Auto-generated method stub  
-		
+		System.out.println(node.operationA());
 	}
 
 	@Override
 	public void visit(NodeB node) {
-		// TODO Auto-generated method stub  
-		
+		System.out.println("访问者模式探索：" + node.operationB());
 	}
 
 }

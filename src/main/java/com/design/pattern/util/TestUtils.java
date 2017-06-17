@@ -33,6 +33,10 @@ import com.design.pattern.visitor.Subject;
 import com.design.pattern.visitor.Visitor;
 import com.design.pattern.visitor.impl.MySubject;
 import com.design.pattern.visitor.impl.MyVisitor;
+import com.design.pattern.visitor.impl.Node;
+import com.design.pattern.visitor.impl.NodeA;
+import com.design.pattern.visitor.impl.NodeB;
+import com.design.pattern.visitor.impl.VisitorA;
 
 /**
  * 
@@ -52,7 +56,7 @@ public class TestUtils {
 	 */
 	public static void main(String[] args) {
 		TestUtils tu = new TestUtils();
-		tu.checkInterpreter();
+		tu.checkMediator();
 	}
 
 	/**
@@ -75,6 +79,7 @@ public class TestUtils {
 	/**
 	 * 中介者模式（Mediator）
 	 * 
+	 * @see 多个类呈网状结构时，改成星型结构。
 	 * @see 中介者模式也是用来降低类类之间的耦合的，因为如果类类之间有依赖关系的话，不利于功能的拓展和维护，因为只要修改一个对象，
 	 *      其它关联的对象都得进行修改。如果使用中介者模式，只需关心和Mediator类的关系，具体类类之间的关系及调度交给Mediator就行，
 	 *      这有点像spring容器的作用。
@@ -86,9 +91,19 @@ public class TestUtils {
 	 *      void
 	 */
 	public void checkMediator() {
-		Mediator mediator = new MyMediator();
-		mediator.createMediator();
-		mediator.workAll();
+//		Mediator mediator = new MyMediator();
+//		mediator.createMediator();
+//		mediator.workAll();
+		
+		Visitor va = new VisitorA();
+		NodeA na = new NodeA();
+		NodeB nb = new NodeB();
+//		na.accept(va);
+//		nb.accept(va);
+		va.visit(na);
+		va.visit(nb);
+		
+		
 	}
 
 	/**
