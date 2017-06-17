@@ -1,4 +1,6 @@
 http://www.cnblogs.com/maowang1991/archive/2013/04/15/3023236.html
+http://blog.csdn.net/doymm2008/article/details/13288067
+
 
 1、工厂方法模式（Factory Method）
 工厂方法模式分为三种：

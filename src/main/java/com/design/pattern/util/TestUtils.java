@@ -70,9 +70,11 @@ public class TestUtils {
 	 */
 	public void checkInterpreter() {
 		// 计算9+2-8的值
-		int result = new com.design.pattern.interpreter.impl.Minus().interpret(
-				(new com.design.pattern.interpreter.impl.Context(new com.design.pattern.interpreter.impl.Plus()
-						.interpret(new com.design.pattern.interpreter.impl.Context(9, 2)), 8)));
+		int result = new com.design.pattern.interpreter.impl.Minus()
+				.interpret((new com.design.pattern.interpreter.impl.Context(
+						new com.design.pattern.interpreter.impl.Plus()
+								.interpret(new com.design.pattern.interpreter.impl.Context(
+										9, 2)), 8)));
 		System.out.println(result);
 	}
 
@@ -314,7 +316,8 @@ public class TestUtils {
 	 */
 	public void checkDecorator() {
 		com.design.pattern.decorator.Sourceable source = new Source();
-		com.design.pattern.decorator.Sourceable obj = new com.design.pattern.decorator.impl.Decorator(source);
+		com.design.pattern.decorator.Sourceable obj = new com.design.pattern.decorator.impl.Decorator(
+				source);
 		obj.method();
 	}
 

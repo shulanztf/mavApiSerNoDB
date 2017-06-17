@@ -18,7 +18,8 @@ public class User1 extends User {
 
 	@Override
 	public void work() {
-//		this.getMediator()
+		MyMediator med = new MyMediator();
+		med.getUser2();
 		System.out.println("user1 exe!");
 	}
 
