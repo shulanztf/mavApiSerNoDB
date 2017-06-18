@@ -1,5 +1,7 @@
 package com.model;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * 
  * @Title: UserEntity
@@ -12,6 +14,7 @@ package com.model;
 // @Table(name = "t_user_mg", schema = "")
 // @DynamicUpdate(true)
 // @DynamicInsert(true)
+@XmlRootElement
 @SuppressWarnings("serial")
 public class UserEntity implements java.io.Serializable {
 	private long id;
