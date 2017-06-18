@@ -97,7 +97,7 @@
 		<property name="supportedMediaTypes"> <list> <value>text/html;charset=UTF-8</value> 
 		</list> </property> </bean> </mvc:message-converters> </mvc:annotation-driven> -->
 
-	<!-- springmvc传json值时的乱码解决 -->
+	<!-- springmvc传json值时的乱码解决 
 	<mvc:annotation-driven>
 		<mvc:message-converters>
 			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
@@ -109,6 +109,8 @@
 			</bean>
 		</mvc:message-converters>
 	</mvc:annotation-driven>
+	-->
+	<mvc:annotation-driven />
 
 
 
