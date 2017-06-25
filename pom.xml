@@ -520,6 +520,15 @@
 		<!-- FTP end   -->
 
 
+		<!-- SFTP start -->
+		<!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
+		<dependency>
+		    <groupId>com.jcraft</groupId>
+		    <artifactId>jsch</artifactId>
+		    <version>0.1.52</version>
+		</dependency>
+		<!-- SFTP end   -->
+
 	</dependencies>
 
 
