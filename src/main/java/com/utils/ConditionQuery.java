@@ -13,25 +13,13 @@ import java.util.Scanner;
 public class ConditionQuery {
 
 	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		System.out.println("行数：" + sc);
-
-		int row = sc.nextInt();
-		for (int i = 0; i < row; i++) {
-			int A = 65;
-			for (int j = row - 1; j > 0; j--) {
-				System.out.print(" ");
-			}
-			for (int k = 0; k < 2 * i + 1; k++) {
-				if (k < (2 * i + 1) / 2) {
-					System.out.print(A++);
-				} else {
-					System.out.print(A--);
-				}
-			}
-			System.out.println("");
-		}
-
+//		System.out.println(System.getProperty("sun.boot.class.path"));
+		ClassLoader loader = ConditionQuery.class.getClassLoader();    //获得加载ClassLoaderTest.class这个类的类加载器  
+		while(loader != null) {  
+		    System.out.println(loader);  
+		    loader = loader.getParent();    //获得父类加载器的引用  
+		}  
+		System.out.println(loader);  
 	}
 
 

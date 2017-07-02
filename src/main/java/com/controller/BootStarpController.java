@@ -1,5 +1,7 @@
 package com.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,6 +50,7 @@ public class BootStarpController {
 	public String nginxReversedProxy(HttpServletRequest request,
 			HttpServletResponse response, Model model) {
 		try {
+			logger.info("nginx反向代理");
 			model.addAttribute("bs_test", "服务器返回数据");
 		} catch (Exception e) {
 			logger.error(e);
@@ -81,12 +84,13 @@ public class BootStarpController {
 	 * @Description:
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/validateLogin", method = RequestMethod.POST)
+	@RequestMapping(value = "/validateLogin")
 	public Object validateLogin(HttpServletRequest request,
 			HttpServletResponse response, Model model, String loginObj,
 			String accountNo, String pwd) {
 		JSONObject result = new JSONObject();
 		try {
+			logger.info("nginx反向代理11");
 			result.put("total", 11);
 
 		} catch (Exception e) {
@@ -123,11 +127,23 @@ public class BootStarpController {
 	 * @param accountNo
 	 * @param pwd
 	 * @return
+	 * @throws IOException
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/validateLogin2")
-	public Object validateLogin2(HttpServletRequest request, String loginObj,
-			String accountNo, String pwd) {
+	public Object validateLogin2(HttpServletRequest request,
+			HttpServletResponse response, String loginObj, String accountNo,
+			String pwd) throws IOException {
+//		response.setContentType("text/html");
+//		PrintWriter out = response.getWriter();
+//		ClassLoader loader = this.getClass().getClassLoader();
+//		while (loader != null) {
+//			out.write(loader.getClass().getName() + "<br/>");
+//			loader = loader.getParent();
+//		}
+//		out.write(String.valueOf(loader));
+//		out.flush();
+//		out.close();
 		TestModel tm = new TestModel();
 		tm.setName("model中不仍");
 		tm.setBirth(new Date());
