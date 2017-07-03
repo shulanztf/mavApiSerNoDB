@@ -515,19 +515,24 @@
 		    <artifactId>camel-ftp</artifactId>
 		    <version>2.18.0</version>
 		</dependency>
-
-		
 		<!-- FTP end   -->
 
-
 		<!-- SFTP start -->
-		<!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
 		<dependency>
 		    <groupId>com.jcraft</groupId>
 		    <artifactId>jsch</artifactId>
 		    <version>0.1.52</version>
 		</dependency>
 		<!-- SFTP end   -->
+		
+		<!-- rpc thrift start -->
+		<dependency>
+		    <groupId>org.apache.thrift</groupId>
+		    <artifactId>libthrift</artifactId>
+		    <version>0.10.0</version>
+		</dependency>
+		<!-- rpc thrift end   -->
+				
 
 	</dependencies>
 
