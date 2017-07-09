@@ -17,6 +17,9 @@ public class MonitorUtil {
 
 	// 结束时打印耗时
 	public static void finish(String methodName) {
+		byte[] arr = "hhhaaa".getBytes();
+		System.out.write(arr, 0, arr.length);
+
 		long finishTime = System.currentTimeMillis();
 		System.out.println(methodName + "方法耗时" + (finishTime - tl.get()) + "ms");
 	}
