@@ -110,6 +110,15 @@
 		</mvc:message-converters>
 	</mvc:annotation-driven>
 	-->
+	
+	<!-- SpringMVC 传参控制		 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
+		p:defaultEncoding="UTF-8" p:maxUploadSize="2097152">
+		<property name="maxInMemorySize">
+			<value>4096</value>
+		</property>
+	</bean>
 	<mvc:annotation-driven />
 
 
