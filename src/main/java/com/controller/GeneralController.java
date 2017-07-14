@@ -5,15 +5,18 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.jeecgframework.poi.excel.entity.ExportParams;
+import org.jeecgframework.poi.excel.entity.enmus.ExcelType;
+import org.jeecgframework.poi.excel.entity.vo.NormalExcelConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,9 +24,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
 import com.model.HmAppProductMgEntity;
+import com.model.ZxbMoneyInRecModel;
 import com.service.GeneralService;
 
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
@@ -41,6 +44,26 @@ public class GeneralController {
 
 	@Resource
 	private GeneralService generalService;
+
+	/**
+	 * 导出
+	 * 
+	 * @param request
+	 * @param modelMap
+	 * @return String
+	 * @throws Exception
+	 */
+	@RequestMapping(params = "exportHeartQueryXls")
+	public String exportHeartQueryXls(HttpServletRequest request, ModelMap modelMap) throws Exception {
+		List<ZxbMoneyInRecModel> incomes = this.generalService.findZxbMoneyInRecList(request);
+		modelMap.put(NormalExcelConstants.FILE_NAME, "资金入账履历信息");
+		modelMap.put(NormalExcelConstants.CLASS, ZxbMoneyInRecModel.class);
+		ExportParams ep = new ExportParams("资金入账信息列表", "导出人:ZTF", "导出信息");
+		ep.setType(ExcelType.XSSF);
+		modelMap.put(NormalExcelConstants.PARAMS, ep);
+		modelMap.put(NormalExcelConstants.DATA_LIST, incomes);
+		return NormalExcelConstants.JEECG_EXCEL_VIEW;
+	}
 
 	/**
 	 * http://localhost:8080/mavApiSerNoDB/generalController/home.do
