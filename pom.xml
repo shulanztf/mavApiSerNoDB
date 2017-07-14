@@ -26,6 +26,14 @@
 		<fastjson-lib.version>1.2.6</fastjson-lib.version>
 		<gson.version>2.2.4</gson.version>
 		<!-- json start -->
+		
+		<poi.version>3.9</poi.version>
+		<easypoi.version>2.1.4</easypoi.version>
+		<antlr.version>3.3</antlr.version>
+		<openoffice.version>3.2.1</openoffice.version>
+		<jodconverter.version>3.0-beta-4</jodconverter.version>
+		<xwork-core.version>2.1.6</xwork-core.version>
+		
 	</properties>
 
 	<repositories>
@@ -500,39 +508,113 @@
 			<version>${gson.version}</version>
 		</dependency>
 		<!-- JSON end -->
-		
+
 		<!-- FTP start -->
-		<!-- https://mvnrepository.com/artifact/commons-net/commons-net
-		<dependency>
-		    <groupId>commons-net</groupId>
-		    <artifactId>commons-net</artifactId>
-		    <version>3.2</version>
-		</dependency>
-		 -->
+		<!-- https://mvnrepository.com/artifact/commons-net/commons-net <dependency> 
+			<groupId>commons-net</groupId> <artifactId>commons-net</artifactId> <version>3.2</version> 
+			</dependency> -->
 		<!-- https://mvnrepository.com/artifact/org.apache.camel/camel-ftp -->
 		<dependency>
-		    <groupId>org.apache.camel</groupId>
-		    <artifactId>camel-ftp</artifactId>
-		    <version>2.18.0</version>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-ftp</artifactId>
+			<version>2.18.0</version>
 		</dependency>
-		<!-- FTP end   -->
+		<!-- FTP end -->
 
 		<!-- SFTP start -->
 		<dependency>
-		    <groupId>com.jcraft</groupId>
-		    <artifactId>jsch</artifactId>
-		    <version>0.1.52</version>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
+			<version>0.1.52</version>
 		</dependency>
-		<!-- SFTP end   -->
-		
+		<!-- SFTP end -->
+
 		<!-- rpc thrift start -->
 		<dependency>
-		    <groupId>org.apache.thrift</groupId>
-		    <artifactId>libthrift</artifactId>
-		    <version>0.10.0</version>
+			<groupId>org.apache.thrift</groupId>
+			<artifactId>libthrift</artifactId>
+			<version>0.10.0</version>
 		</dependency>
-		<!-- rpc thrift end   -->
-				
+		<!-- rpc thrift end -->
+
+		<!-- poi start -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>${poi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>${poi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml-schemas</artifactId>
+			<version>${poi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-scratchpad</artifactId>
+			<version>${poi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jeecgframework</groupId>
+			<artifactId>easypoi-base</artifactId>
+			<version>${easypoi.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jeecg</groupId>
+					<artifactId>easypoi-annotation</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.jeecgframework</groupId>
+			<artifactId>easypoi-web</artifactId>
+			<version>${easypoi.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jeecg</groupId>
+					<artifactId>easypoi-base</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.jeecgframework</groupId>
+			<artifactId>easypoi-annotation</artifactId>
+			<version>${easypoi.version}</version>
+		</dependency>
+		<!-- poi end -->
+
+		<!-- openoffice start -->
+		<dependency>
+			<groupId>org.openoffice</groupId>
+			<artifactId>juh</artifactId>
+			<version>${openoffice.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openoffice</groupId>
+			<artifactId>unoil</artifactId>
+			<version>${openoffice.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openoffice</groupId>
+			<artifactId>jurt</artifactId>
+			<version>${openoffice.version}</version>
+		</dependency>
+		<!-- java的OpenDucument文件转换器，它利用OpenOffice来进行转换工作 -->
+		<dependency>
+			<groupId>org.artofsolving</groupId>
+			<artifactId>jodconverter</artifactId>
+			<version>${jodconverter.version}</version>
+		</dependency>
+		<!-- openoffice end -->
+		<dependency>
+			<groupId>com.opensymphony</groupId>
+			<artifactId>xwork-core</artifactId>
+			<version>${xwork-core.version}</version>
+		</dependency>
 
 	</dependencies>
 
