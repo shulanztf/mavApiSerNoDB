@@ -16,7 +16,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecgframework.poi.excel.annotation.ExcelCollection;
 import org.jeecgframework.poi.excel.annotation.ExcelEntity;
 import org.jeecgframework.poi.excel.annotation.ExcelTarget;
@@ -31,6 +30,7 @@ import org.jeecgframework.poi.exception.excel.enums.ExcelExportEnum;
 import org.jeecgframework.poi.util.PoiPublicUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.ztfframework.poi.excel.annotation.ZtfExcel;
 
 /**
  * 
@@ -47,8 +47,8 @@ public class ZtfExcelExportServer extends ExcelExportServer {
 	@Override
 	public void createSheet(Workbook workbook, ExportParams entity, Class<?> pojoClass, Collection<?> dataSet) {
 		if (logger.isDebugEnabled()) {
-			logger.debug("Excel export start ,class is {}", pojoClass);
-			logger.debug("Excel version is {}", entity.getType().equals(ExcelType.HSSF) ? "03" : "07");
+			logger.debug("ZtfExcel export start ,class is {}", pojoClass);
+			logger.debug("ZtfExcel version is {}", entity.getType().equals(ExcelType.HSSF) ? "03" : "07");
 		}
 		if (workbook == null || entity == null || pojoClass == null || dataSet == null) {
 			throw new ExcelExportException(ExcelExportEnum.PARAMETER_ERROR);
@@ -145,7 +145,7 @@ public class ZtfExcelExportServer extends ExcelExportServer {
 				continue;
 			}
 			// 首先判断Excel 可能一下特殊数据用户回自定义处理
-			if (field.getAnnotation(Excel.class) != null) {
+			if (field.getAnnotation(ZtfExcel.class) != null) {
 				excelParams.add(createExcelExportEntity(field, targetId, pojoClass, getMethods));
 			} else if (PoiPublicUtil.isCollection(field.getType())) {
 				ExcelCollection excel = field.getAnnotation(ExcelCollection.class);
@@ -183,10 +183,9 @@ public class ZtfExcelExportServer extends ExcelExportServer {
 	 * @return
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unused")
 	private ExcelExportEntity createExcelExportEntity(Field field, String targetId, Class<?> pojoClass,
 			List<Method> getMethods) throws Exception {
-		Excel excel = field.getAnnotation(Excel.class);
+		ZtfExcel excel = field.getAnnotation(ZtfExcel.class);
 		ExcelExportEntity excelEntity = new ExcelExportEntity();
 		excelEntity.setType(excel.type());
 		getExcelField(targetId, field, excelEntity, excel, pojoClass);
@@ -209,7 +208,7 @@ public class ZtfExcelExportServer extends ExcelExportServer {
 	 * @param pojoClass
 	 * @throws Exception
 	 */
-	private void getExcelField(String targetId, Field field, ExcelExportEntity excelEntity, Excel excel,
+	private void getExcelField(String targetId, Field field, ExcelExportEntity excelEntity, ZtfExcel excel,
 			Class<?> pojoClass) throws Exception {
 		excelEntity.setName(getExcelName(excel.name(), targetId));
 		excelEntity.setWidth(excel.width());
