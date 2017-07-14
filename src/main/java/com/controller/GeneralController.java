@@ -38,7 +38,7 @@ import net.sf.json.JSONObject;
  *
  */
 @Controller
-@RequestMapping("/generalController")
+@RequestMapping("/general")
 public class GeneralController {
 	private static final Logger logger = Logger.getLogger(GeneralController.class);
 
@@ -48,12 +48,13 @@ public class GeneralController {
 	/**
 	 * 导出
 	 * 
+	 * @see http://localhost:8080/mavApiSerNoDB/general/exportHeartQueryXls.do
 	 * @param request
 	 * @param modelMap
 	 * @return String
 	 * @throws Exception
 	 */
-	@RequestMapping(params = "exportHeartQueryXls")
+	@RequestMapping(value = "/exportHeartQueryXls")
 	public String exportHeartQueryXls(HttpServletRequest request, ModelMap modelMap) throws Exception {
 		List<ZxbMoneyInRecModel> incomes = this.generalService.findZxbMoneyInRecList(request);
 		modelMap.put(NormalExcelConstants.FILE_NAME, "资金入账履历信息");
@@ -66,7 +67,7 @@ public class GeneralController {
 	}
 
 	/**
-	 * http://localhost:8080/mavApiSerNoDB/generalController/home.do
+	 * http://localhost:8080/mavApiSerNoDB/general/home.do
 	 * 
 	 * @param request
 	 * @param response
@@ -90,7 +91,7 @@ public class GeneralController {
 	}
 
 	/**
-	 * http://localhost:8080/mavApiSerNoDB/generalController/bootStarpTest.do
+	 * http://localhost:8080/mavApiSerNoDB/general/bootStarpTest.do
 	 * 
 	 * @Description:
 	 */
@@ -101,7 +102,7 @@ public class GeneralController {
 	}
 
 	/**
-	 * http://localhost:8080/mavApiSerNoDB/generalController/list.do
+	 * http://localhost:8080/mavApiSerNoDB/general/list.do
 	 * 
 	 * @param request
 	 * @param response
@@ -125,7 +126,7 @@ public class GeneralController {
 	}
 
 	/**
-	 * http://localhost:8080/mavApiSerNoDB/generalController/findList.do
+	 * http://localhost:8080/mavApiSerNoDB/general/findList.do
 	 * 
 	 * @param request
 	 * @param response
@@ -157,7 +158,7 @@ public class GeneralController {
 	}
 
 	/**
-	 * http://localhost:8080/mavApiSerNoDB/generalController/getAllParam.do
+	 * http://localhost:8080/mavApiSerNoDB/general/getAllParam.do
 	 * 
 	 * @param request
 	 * @param response
