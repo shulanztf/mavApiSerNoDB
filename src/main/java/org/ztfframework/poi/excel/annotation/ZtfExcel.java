@@ -5,6 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * 
  * @Title: ZtfExcel
@@ -83,10 +85,16 @@ public @interface ZtfExcel {
 	 */
 	public String orderNum() default "0";
 
+	// /**
+	// * 值得替换 导出是{a_id,b_id} 导入反过来,所以只用写一个
+	// */
+	// @Deprecated
+	// public String[] replace() default {};
+
 	/**
-	 * 值得替换 导出是{a_id,b_id} 导入反过来,所以只用写一个
+	 * 值得替换，替换replace()，此处写定数组编码，对应字典表的group值，为空或未查到数据时，显示code值
 	 */
-	public String[] replace() default {};
+	public String replaceCode() default StringUtils.EMPTY;
 
 	/**
 	 * 导入路径,如果是图片可以填写,默认是upload/className/ IconEntity这个类对应的就是upload/Icon/

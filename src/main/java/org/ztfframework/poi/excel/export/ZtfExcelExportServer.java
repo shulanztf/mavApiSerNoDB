@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Row;
@@ -283,29 +283,35 @@ public class ZtfExcelExportServer extends ExcelExportServer {
 	 * @param targetId
 	 * @param field
 	 * @param excelEntity
-	 * @param excel
+	 * @param ztfExcel
 	 * @param pojoClass
 	 * @throws Exception
 	 */
 	private void getExcelField(String targetId, Field field,
-			ExcelExportEntity excelEntity, ZtfExcel excel, Class<?> pojoClass)
+			ExcelExportEntity excelEntity, ZtfExcel ztfExcel, Class<?> pojoClass)
 			throws Exception {
-		excelEntity.setName(getExcelName(excel.name(), targetId));
-		excelEntity.setWidth(excel.width());
-		excelEntity.setHeight(excel.height());
-		excelEntity.setNeedMerge(excel.needMerge());
-		excelEntity.setMergeVertical(excel.mergeVertical());
-		excelEntity.setMergeRely(excel.mergeRely());
-		excelEntity.setReplace(excel.replace());// TODO
-		excelEntity.setOrderNum(getCellOrder(excel.orderNum(), targetId));
-		excelEntity.setWrap(excel.isWrap());
-		excelEntity.setExportImageType(excel.imageType());
-		excelEntity.setSuffix(excel.suffix());
-		excelEntity.setDatabaseFormat(excel.databaseFormat());
+		excelEntity.setName(getExcelName(ztfExcel.name(), targetId));
+		excelEntity.setWidth(ztfExcel.width());
+		excelEntity.setHeight(ztfExcel.height());
+		excelEntity.setNeedMerge(ztfExcel.needMerge());
+		excelEntity.setMergeVertical(ztfExcel.mergeVertical());
+		excelEntity.setMergeRely(ztfExcel.mergeRely());
+
+		if (StringUtils.isNotBlank(ztfExcel.replaceCode())) {
+			System.out.println(ztfExcel.replaceCode());
+			// TODO 能否依靠spring注入bean
+			// excelEntity.setReplace(excel.replace());// TODO 切换注解，查询数据库
+		}
+
+		excelEntity.setOrderNum(getCellOrder(ztfExcel.orderNum(), targetId));
+		excelEntity.setWrap(ztfExcel.isWrap());
+		excelEntity.setExportImageType(ztfExcel.imageType());
+		excelEntity.setSuffix(ztfExcel.suffix());
+		excelEntity.setDatabaseFormat(ztfExcel.databaseFormat());
 		excelEntity
-				.setFormat(StringUtils.isNotEmpty(excel.exportFormat()) ? excel
-						.exportFormat() : excel.format());
-		excelEntity.setStatistics(excel.isStatistics());
+				.setFormat(StringUtils.isNotEmpty(ztfExcel.exportFormat()) ? ztfExcel
+						.exportFormat() : ztfExcel.format());
+		excelEntity.setStatistics(ztfExcel.isStatistics());
 		String fieldname = field.getName();
 		excelEntity.setMethod(PoiPublicUtil.getMethod(fieldname, pojoClass));
 	}

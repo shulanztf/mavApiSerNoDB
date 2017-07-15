@@ -26,7 +26,9 @@ public class ZxbMoneyOutRecModel {
 	@ZtfExcel(name = "日期时间", width = 50)
 	private java.util.Date rectime;
 	/** 产品分类 */
-	@ZtfExcel(name = "产品分类", width = 50, replace = { " _null", "短乐帮_A", "长隆帮_B" })
+	// @ZtfExcel(name = "产品分类", width = 50, replace = { " _null", "短乐帮_A",
+	// "长隆帮_B" })
+	@ZtfExcel(name = "产品分类", width = 50, replaceCode = "producttype")
 	private java.lang.String producttype;
 	/** 实际支付金额 */
 	@ZtfExcel(name = "实际支付金额", width = 50)
@@ -35,7 +37,8 @@ public class ZxbMoneyOutRecModel {
 	@ZtfExcel(name = "抵扣金额", width = 50)
 	private BigDecimal deductionmoney;
 	/** 资金区分 */
-	@ZtfExcel(name = "资金区分", width = 50)
+	// @ZtfExcel(name = "资金区分", width = 50)
+	@ZtfExcel(name = "资金区分", width = 50, replaceCode = "moneyinclass")
 	private java.lang.String moneyclass;
 
 	public java.lang.String getId() {
