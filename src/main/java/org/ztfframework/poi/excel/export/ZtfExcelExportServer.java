@@ -16,8 +16,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecgframework.poi.excel.annotation.ExcelCollection;
 import org.jeecgframework.poi.excel.annotation.ExcelEntity;
+import org.jeecgframework.poi.excel.annotation.ExcelIgnore;
 import org.jeecgframework.poi.excel.annotation.ExcelTarget;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.enmus.ExcelType;
@@ -154,8 +156,7 @@ public class ZtfExcelExportServer extends ExcelExportServer {
 		for (int i = 0; i < fields.length; i++) {
 			Field field = fields[i];
 			// 先判断是不是collection,在判断是不是java自带对象,之后就是我们自己的对象了
-			if (PoiPublicUtil.isNotUserExcelUserThis(exclusionsList, field,
-					targetId)) {
+			if (isNotUserExcelUserThis(exclusionsList, field, targetId)) {
 				continue;
 			}
 			// 首先判断Excel 可能一下特殊数据用户回自定义处理
@@ -196,6 +197,58 @@ public class ZtfExcelExportServer extends ExcelExportServer {
 						newMethods);
 			}
 		}
+	}
+
+	public boolean isNotUserExcelUserThis(List<String> exclusionsList,
+			Field field, String targetId) {
+		boolean boo = true;
+		if (field.getAnnotation(ExcelIgnore.class) != null)
+			boo = true;
+		else if ((boo)
+				&& (field.getAnnotation(ExcelCollection.class) != null)
+				&& (isUseInThis(
+						((ExcelCollection) field.getAnnotation(ExcelCollection.class))
+								.name(), targetId))
+				&& ((exclusionsList == null) || (!exclusionsList
+						.contains(((ExcelCollection) field
+								.getAnnotation(ExcelCollection.class)).name())))) {
+			boo = false;
+		} else if ((boo)
+				&& (field.getAnnotation(Excel.class) != null)
+				&& (isUseInThis(
+						((Excel) field.getAnnotation(Excel.class)).name(),
+						targetId))
+				&& ((exclusionsList == null) || (!exclusionsList
+						.contains(((Excel) field.getAnnotation(Excel.class))
+								.name())))) {
+			boo = false;
+		} else if ((boo)
+				&& (field.getAnnotation(ZtfExcel.class) != null)
+				&& (isUseInThis(
+						((ZtfExcel) field.getAnnotation(ZtfExcel.class)).name(),
+						targetId))
+				&& ((exclusionsList == null) || (!exclusionsList
+						.contains(((ZtfExcel) field
+								.getAnnotation(ZtfExcel.class)).name())))) {
+			boo = false;
+		} else if ((boo)
+				&& (field.getAnnotation(ExcelEntity.class) != null)
+				&& (isUseInThis(
+						((ExcelEntity) field.getAnnotation(ExcelEntity.class))
+								.name(),
+						targetId))
+				&& ((exclusionsList == null) || (!exclusionsList
+						.contains(((ExcelEntity) field
+								.getAnnotation(ExcelEntity.class)).name())))) {
+			boo = false;
+		}
+		return boo;
+	}
+
+	private boolean isUseInThis(String exportName, String targetId) {
+		return (targetId == null) || (exportName.equals(""))
+				|| (exportName.indexOf("_") < 0)
+				|| (exportName.indexOf(targetId) != -1);
 	}
 
 	/**

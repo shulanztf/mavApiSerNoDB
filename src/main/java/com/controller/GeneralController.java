@@ -62,9 +62,9 @@ public class GeneralController {
 			throws Exception {
 		List<ZxbMoneyInRecModel> incomes = this.generalService
 				.findZxbMoneyInRecList(request);
-		modelMap.put(NormalExcelConstants.FILE_NAME, "资金入账履历信息");
+		modelMap.put(NormalExcelConstants.FILE_NAME, "Exctl导出信息");
 		modelMap.put(NormalExcelConstants.CLASS, ZxbMoneyInRecModel.class);
-		ExportParams ep = new ExportParams("资金入账信息列表", "导出人:ZTF", "导出信息");
+		ExportParams ep = new ExportParams("Exctl导出信息列表", "导出人:ZTF", "导出信息");
 		ep.setType(ExcelType.XSSF);
 		modelMap.put(NormalExcelConstants.PARAMS, ep);
 		modelMap.put(NormalExcelConstants.DATA_LIST, incomes);
@@ -73,7 +73,7 @@ public class GeneralController {
 
 	/**
 	 * @Title: exportOutXls
-	 * @Description: ZtfExcel 导出
+	 * @Description: 自定义Excel导出
 	 * @see http://localhost:8080/mavApiSerNoDB/general/exportOutXls.do
 	 * @param @param request
 	 * @param @param modelMap
@@ -87,9 +87,9 @@ public class GeneralController {
 			throws Exception {
 		List<ZxbMoneyOutRecModel> incomes = this.generalService
 				.exportOutXls(request);
-		modelMap.put(NormalExcelConstants.FILE_NAME, "资金入账履历信息");
+		modelMap.put(NormalExcelConstants.FILE_NAME, "自定义Excel导出信息");
 		modelMap.put(NormalExcelConstants.CLASS, ZxbMoneyOutRecModel.class);
-		ExportParams ep = new ExportParams("资金入账信息列表", "导出人:ZTF", "导出信息");
+		ExportParams ep = new ExportParams("自定义Excel信息列表", "导出人:ZTF", "导出信息");
 		ep.setType(ExcelType.XSSF);
 		modelMap.put(NormalExcelConstants.PARAMS, ep);
 		modelMap.put(NormalExcelConstants.DATA_LIST, incomes);
