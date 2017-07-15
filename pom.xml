@@ -36,7 +36,26 @@
 
 	</properties>
 
+
 	<repositories>
+		<repository>
+			<id>mvn</id>
+			<name>mvn Repository</name>
+			<url>http://mvnrepository.com/artifact</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>outof</id>
+			<name>outof Repository</name>
+			<url>http://maven.outofmemory.cn/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
 		<repository>
 			<id>central</id>
 			<name>Central Repository</name>
@@ -603,12 +622,13 @@
 			<artifactId>jurt</artifactId>
 			<version>${openoffice.version}</version>
 		</dependency>
-		<!-- java的OpenDucument文件转换器，它利用OpenOffice来进行转换工作 -->
+		<!-- java的OpenDucument文件转换器，它利用OpenOffice来进行转换工作
 		<dependency>
 			<groupId>org.artofsolving</groupId>
 			<artifactId>jodconverter</artifactId>
 			<version>${jodconverter.version}</version>
 		</dependency>
+		 -->
 		<!-- openoffice end -->
 		<dependency>
 			<groupId>com.opensymphony</groupId>
