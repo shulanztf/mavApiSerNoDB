@@ -2,62 +2,41 @@ package com.model;
 
 import java.math.BigDecimal;
 
-import org.jeecgframework.poi.excel.annotation.Excel;
+import org.ztfframework.poi.excel.annotation.ZtfExcel;
 
 /**
  * 
- * @Title: ZxbMoneyInRecModel
- * @Description: Excel导出
- * @Author: zhaotf
- * @Since:2017年7月14日 下午2:07:12
- * @Version:1.0
+ * @ClassName: ZxbMoneyOutRecModel
+ * @Description: ZtfExcel导出
+ * @author zhaotf
+ * @date 2017年7月15日 下午12:27:43
  */
-public class ZxbMoneyInRecModel {
+public class ZxbMoneyOutRecModel {
 	/** 资金入账ID */
-	@Excel(name = "资金入账ID", width = 50)
+	@ZtfExcel(name = "资金入账ID", width = 50)
 	private java.lang.String id;
-	// /** 用户id */
-	// @Excel(name = "用户ID", width = 50)
 	private java.lang.String userid;
 	/** 资产ID */
-	@Excel(name = "资产ID", width = 50)
+	@ZtfExcel(name = "资产ID", width = 50)
 	private java.lang.String assetid;
 	/** 手机号 */
-	@Excel(name = "手机号", width = 50)
+	@ZtfExcel(name = "手机号", width = 50)
 	private java.lang.String mobileno;
 	/** 日期时间 */
-	@Excel(name = "日期时间", width = 50)
+	@ZtfExcel(name = "日期时间", width = 50)
 	private java.util.Date rectime;
 	/** 产品分类 */
-	@Excel(name = "产品分类", width = 50, replace = { " _null", "短乐帮_A", "长隆帮_B" })
+	@ZtfExcel(name = "产品分类", width = 50, replace = { " _null", "短乐帮_A", "长隆帮_B" })
 	private java.lang.String producttype;
-	// /** 期限 */
-	// @Excel(name = "期限", width = 50)
-	// private BigDecimal term;
 	/** 实际支付金额 */
-	@Excel(name = "实际支付金额", width = 50)
+	@ZtfExcel(name = "实际支付金额", width = 50)
 	private BigDecimal paymoney;
 	/** 抵扣金额 */
-	@Excel(name = "抵扣金额", width = 50)
+	@ZtfExcel(name = "抵扣金额", width = 50)
 	private BigDecimal deductionmoney;
 	/** 资金区分 */
-	@Excel(name = "资金区分", width = 50)
+	@ZtfExcel(name = "资金区分", width = 50)
 	private java.lang.String moneyclass;
-	// /** 银行code */
-	// @Excel(name = "银行code", width = 50)
-	// private java.lang.String bankcode;
-	// /** 银行卡号 */
-	// @Excel(name = "银行卡号", width = 50)
-	// private java.lang.String bankcardnum;
-	// /** 第三方支付Code */
-	// @Excel(name = "第三方支付code", width = 50)
-	// private java.lang.String thirdpaycode;
-	// /** 设备来源 */
-	// @Excel(name = "设备来源", width = 50)
-	// private java.lang.String fromdevice;
-	// /** 渠道来源 */
-	// @Excel(name = "渠道来源", width = 50)
-	// private java.lang.String fromchannel;
 
 	public java.lang.String getId() {
 		return id;

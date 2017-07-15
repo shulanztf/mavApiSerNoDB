@@ -10,10 +10,13 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONObject;
+
 import org.apache.log4j.Logger;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.enmus.ExcelType;
 import org.jeecgframework.poi.excel.entity.vo.NormalExcelConstants;
+import org.jeecgframework.poi.excel.entity.vo.TemplateExcelConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -25,9 +28,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSON;
 import com.model.HmAppProductMgEntity;
 import com.model.ZxbMoneyInRecModel;
+import com.model.ZxbMoneyOutRecModel;
 import com.service.GeneralService;
-
-import net.sf.json.JSONObject;
 
 /**
  * @Title: GeneralController
@@ -40,25 +42,53 @@ import net.sf.json.JSONObject;
 @Controller
 @RequestMapping("/general")
 public class GeneralController {
-	private static final Logger logger = Logger.getLogger(GeneralController.class);
+	private static final Logger logger = Logger
+			.getLogger(GeneralController.class);
 
 	@Resource
 	private GeneralService generalService;
 
 	/**
-	 * 导出
+	 * Exctl 导出
 	 * 
-	 * @see http://localhost:8080/mavApiSerNoDB/general/exportHeartQueryXls.do
+	 * @see http://localhost:8080/mavApiSerNoDB/general/exportInXls.do
 	 * @param request
 	 * @param modelMap
 	 * @return String
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/exportHeartQueryXls")
-	public String exportHeartQueryXls(HttpServletRequest request, ModelMap modelMap) throws Exception {
-		List<ZxbMoneyInRecModel> incomes = this.generalService.findZxbMoneyInRecList(request);
+	@RequestMapping(value = "/exportInXls")
+	public String exportInXls(HttpServletRequest request, ModelMap modelMap)
+			throws Exception {
+		List<ZxbMoneyInRecModel> incomes = this.generalService
+				.findZxbMoneyInRecList(request);
 		modelMap.put(NormalExcelConstants.FILE_NAME, "资金入账履历信息");
 		modelMap.put(NormalExcelConstants.CLASS, ZxbMoneyInRecModel.class);
+		ExportParams ep = new ExportParams("资金入账信息列表", "导出人:ZTF", "导出信息");
+		ep.setType(ExcelType.XSSF);
+		modelMap.put(NormalExcelConstants.PARAMS, ep);
+		modelMap.put(NormalExcelConstants.DATA_LIST, incomes);
+		return TemplateExcelConstants.JEECG_TEMPLATE_EXCEL_VIEW;
+	}
+
+	/**
+	 * @Title: exportOutXls
+	 * @Description: ZtfExcel 导出
+	 * @see http://localhost:8080/mavApiSerNoDB/general/exportOutXls.do
+	 * @param @param request
+	 * @param @param modelMap
+	 * @param @return
+	 * @param @throws Exception
+	 * @return String
+	 * @throws
+	 */
+	@RequestMapping(value = "/exportOutXls")
+	public String exportOutXls(HttpServletRequest request, ModelMap modelMap)
+			throws Exception {
+		List<ZxbMoneyOutRecModel> incomes = this.generalService
+				.exportOutXls(request);
+		modelMap.put(NormalExcelConstants.FILE_NAME, "资金入账履历信息");
+		modelMap.put(NormalExcelConstants.CLASS, ZxbMoneyOutRecModel.class);
 		ExportParams ep = new ExportParams("资金入账信息列表", "导出人:ZTF", "导出信息");
 		ep.setType(ExcelType.XSSF);
 		modelMap.put(NormalExcelConstants.PARAMS, ep);
@@ -76,7 +106,8 @@ public class GeneralController {
 	 * @Description:
 	 */
 	@RequestMapping(value = "/home")
-	public String home(HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String home(HttpServletRequest request,
+			HttpServletResponse response, Model model) {
 		try {
 			model.addAttribute("liming", "好了");
 			// HmAppProductMgEntity entity =
@@ -96,7 +127,8 @@ public class GeneralController {
 	 * @Description:
 	 */
 	@RequestMapping(value = "bootStarpTest")
-	public String bootStarpTest(HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String bootStarpTest(HttpServletRequest request,
+			HttpServletResponse response, Model model) {
 		model.addAttribute("bsTest", "bs学习");
 		return "bootstarp/head";
 	}
@@ -111,7 +143,8 @@ public class GeneralController {
 	 * @Description:
 	 */
 	@RequestMapping(value = "/list")
-	public String list(HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String list(HttpServletRequest request,
+			HttpServletResponse response, Model model) {
 		try {
 			model.addAttribute("liming", "好了");
 			// HmAppProductMgEntity entity =
@@ -136,7 +169,8 @@ public class GeneralController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "findList", method = RequestMethod.POST)
-	public Object findList(HttpServletRequest request, HttpServletResponse response, Model model, Integer page,
+	public Object findList(HttpServletRequest request,
+			HttpServletResponse response, Model model, Integer page,
 			Integer rows) {
 		JSONObject result = new JSONObject();
 		try {
@@ -172,11 +206,14 @@ public class GeneralController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "getAllParam")
-	public Object getAllParam(HttpServletRequest request, HttpServletResponse response,
+	public Object getAllParam(
+			HttpServletRequest request,
+			HttpServletResponse response,
 			@RequestParam(required = false, defaultValue = "1") Integer page, // 第几页
 			@RequestParam(required = false, defaultValue = "10") Integer rows, // 页数大小
 			@RequestParam(required = false, defaultValue = "") String paramName,
-			@RequestParam(required = false, defaultValue = "") String createTime) throws IOException {
+			@RequestParam(required = false, defaultValue = "") String createTime)
+			throws IOException {
 		JSONObject params = new JSONObject();
 		params.put("pageSize", rows);
 		params.put("pageIndex", (page - 1) * rows);
