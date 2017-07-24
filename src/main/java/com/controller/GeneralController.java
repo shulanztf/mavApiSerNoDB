@@ -7,8 +7,10 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import net.sf.json.JSONObject;
 
@@ -42,11 +44,30 @@ import com.service.GeneralService;
 @Controller
 @RequestMapping("/general")
 public class GeneralController {
-	private static final Logger logger = Logger
-			.getLogger(GeneralController.class);
+	private static final Logger logger = Logger.getLogger(GeneralController.class);
 
 	@Resource
 	private GeneralService generalService;
+
+	/**
+	 * springMVC 返回xml 方式之一；也可以用 @XmlRootElement 实现；
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 *             void
+	 */
+	@ResponseBody
+	@RequestMapping(params = "transact")
+	public void transact(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		response.setContentType("application/xml;charset=UTF-8");
+		// String xml = (String) depositTransactService.transact(request);
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ap><plain><resp_code>0000</resp_code><resp_desc>成功</resp_desc><mchnt_cd>0003310F0352406</mchnt_cd><mchnt_txn_ssn>HF1500885462332</mchnt_txn_ssn></plain><signature>bw75avvsmJChwl57lhHt48rlCBewLVvbPiBIfuA9rWidct4mTMMcr9B4XvFMfaPFlSz2FchExCVRH0hTfK2Y3PKOrmee3KFgxqlKEu+zI5bZyPCJDrEEgGUHQurh04VfVSwCc4nWztJHp3ZOf9JOHglendOdnM1NHcnURUSGS2s=</signature></ap>";
+		ServletOutputStream os = response.getOutputStream();
+		os.write(xml.getBytes());
+		os.flush();
+		os.close();
+	}
 
 	/**
 	 * Exctl 导出
@@ -58,10 +79,8 @@ public class GeneralController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/exportInXls")
-	public String exportInXls(HttpServletRequest request, ModelMap modelMap)
-			throws Exception {
-		List<ZxbMoneyInRecModel> incomes = this.generalService
-				.findZxbMoneyInRecList(request);
+	public String exportInXls(HttpServletRequest request, ModelMap modelMap) throws Exception {
+		List<ZxbMoneyInRecModel> incomes = this.generalService.findZxbMoneyInRecList(request);
 		modelMap.put(NormalExcelConstants.FILE_NAME, "Exctl导出信息");
 		modelMap.put(NormalExcelConstants.CLASS, ZxbMoneyInRecModel.class);
 		ExportParams ep = new ExportParams("Exctl导出信息列表", "导出人:ZTF", "导出信息");
@@ -72,21 +91,15 @@ public class GeneralController {
 	}
 
 	/**
-	 * @Title: exportOutXls
-	 * @Description: 自定义Excel导出
-	 * @see http://localhost:8080/mavApiSerNoDB/general/exportOutXls.do
-	 * @param @param request
-	 * @param @param modelMap
-	 * @param @return
-	 * @param @throws Exception
-	 * @return String
-	 * @throws
+	 * @Title: exportOutXls @Description: 自定义Excel导出 @see
+	 *         http://localhost:8080/mavApiSerNoDB/general/exportOutXls.
+	 *         do @param @param request @param @param
+	 *         modelMap @param @return @param @throws Exception @return
+	 *         String @throws
 	 */
 	@RequestMapping(value = "/exportOutXls")
-	public String exportOutXls(HttpServletRequest request, ModelMap modelMap)
-			throws Exception {
-		List<ZxbMoneyOutRecModel> incomes = this.generalService
-				.exportOutXls(request);
+	public String exportOutXls(HttpServletRequest request, ModelMap modelMap) throws Exception {
+		List<ZxbMoneyOutRecModel> incomes = this.generalService.exportOutXls(request);
 		modelMap.put(NormalExcelConstants.FILE_NAME, "自定义Excel导出信息");
 		modelMap.put(NormalExcelConstants.CLASS, ZxbMoneyOutRecModel.class);
 		ExportParams ep = new ExportParams("自定义Excel信息列表", "导出人:ZTF", "导出信息");
@@ -106,8 +119,7 @@ public class GeneralController {
 	 * @Description:
 	 */
 	@RequestMapping(value = "/home")
-	public String home(HttpServletRequest request,
-			HttpServletResponse response, Model model) {
+	public String home(HttpServletRequest request, HttpServletResponse response, Model model) {
 		try {
 			model.addAttribute("liming", "好了");
 			// HmAppProductMgEntity entity =
@@ -127,8 +139,7 @@ public class GeneralController {
 	 * @Description:
 	 */
 	@RequestMapping(value = "bootStarpTest")
-	public String bootStarpTest(HttpServletRequest request,
-			HttpServletResponse response, Model model) {
+	public String bootStarpTest(HttpServletRequest request, HttpServletResponse response, Model model) {
 		model.addAttribute("bsTest", "bs学习");
 		return "bootstarp/head";
 	}
@@ -143,8 +154,7 @@ public class GeneralController {
 	 * @Description:
 	 */
 	@RequestMapping(value = "/list")
-	public String list(HttpServletRequest request,
-			HttpServletResponse response, Model model) {
+	public String list(HttpServletRequest request, HttpServletResponse response, Model model) {
 		try {
 			model.addAttribute("liming", "好了");
 			// HmAppProductMgEntity entity =
@@ -169,8 +179,7 @@ public class GeneralController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "findList", method = RequestMethod.POST)
-	public Object findList(HttpServletRequest request,
-			HttpServletResponse response, Model model, Integer page,
+	public Object findList(HttpServletRequest request, HttpServletResponse response, Model model, Integer page,
 			Integer rows) {
 		JSONObject result = new JSONObject();
 		try {
@@ -206,14 +215,11 @@ public class GeneralController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "getAllParam")
-	public Object getAllParam(
-			HttpServletRequest request,
-			HttpServletResponse response,
+	public Object getAllParam(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam(required = false, defaultValue = "1") Integer page, // 第几页
 			@RequestParam(required = false, defaultValue = "10") Integer rows, // 页数大小
 			@RequestParam(required = false, defaultValue = "") String paramName,
-			@RequestParam(required = false, defaultValue = "") String createTime)
-			throws IOException {
+			@RequestParam(required = false, defaultValue = "") String createTime) throws IOException {
 		JSONObject params = new JSONObject();
 		params.put("pageSize", rows);
 		params.put("pageIndex", (page - 1) * rows);
