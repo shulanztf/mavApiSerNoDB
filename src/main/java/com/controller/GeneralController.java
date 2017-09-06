@@ -10,9 +10,6 @@ import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -33,6 +30,8 @@ import com.model.ZxbMoneyInRecModel;
 import com.model.ZxbMoneyOutRecModel;
 import com.service.GeneralService;
 
+import net.sf.json.JSONObject;
+
 /**
  * @Title: GeneralController
  * @Description:
@@ -48,6 +47,35 @@ public class GeneralController {
 
 	@Resource
 	private GeneralService generalService;
+
+	/**
+	 * 数据绑定测试 POST
+	 * 
+	 * @return Object
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/postDataTest", method = RequestMethod.POST)
+	public Object postDataTest(HttpServletRequest request, String msg, Integer pageNo, boolean filg) {
+		logger.info("数据绑定 ，POST请求:");
+		logger.info("数据绑定 ，request:" + request.getParameter("msg") + ",绑定数据:" + msg);
+		logger.info("数据绑定 ，request:" + request.getParameter("pageNo") + ",绑定数据:" + pageNo);
+		logger.info("数据绑定 ，request:" + request.getParameter("filg") + ",绑定数据:" + filg);
+		return "ovdata";
+	}
+
+	/**
+	 * 数据绑定测试 GET
+	 * 
+	 * @return Object
+	 */
+	@RequestMapping(value = "/getDataTest", method = RequestMethod.GET)
+	public Object getDataTest(HttpServletRequest request, String msg, Integer pageNo, boolean filg) {
+		logger.info("数据绑定 ，GET请求:");
+		logger.info("数据绑定 ，request:" + request.getParameter("msg") + ",绑定数据:" + msg);
+		logger.info("数据绑定 ，request:" + request.getParameter("pageNo") + ",绑定数据:" + pageNo);
+		logger.info("数据绑定 ，request:" + request.getParameter("filg") + ",绑定数据:" + filg);
+		return "ovdata";
+	}
 
 	/**
 	 * springMVC 返回xml 方式之一；也可以用 @XmlRootElement 实现；
