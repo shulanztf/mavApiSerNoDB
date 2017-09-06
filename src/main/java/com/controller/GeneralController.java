@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
 import com.model.HmAppProductMgEntity;
+import com.model.TestModel;
 import com.model.ZxbMoneyInRecModel;
 import com.model.ZxbMoneyOutRecModel;
 import com.service.GeneralService;
@@ -60,6 +61,23 @@ public class GeneralController {
 		logger.info("数据绑定 ，request:" + request.getParameter("msg") + ",绑定数据:" + msg);
 		logger.info("数据绑定 ，request:" + request.getParameter("pageNo") + ",绑定数据:" + pageNo);
 		logger.info("数据绑定 ，request:" + request.getParameter("filg") + ",绑定数据:" + filg);
+		return "ovdata";
+	}
+
+	/**
+	 * 数据绑定测试 POST 对象
+	 * 
+	 * @param request
+	 * @param obj
+	 * @return Object
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/postObjTest", method = RequestMethod.POST)
+	public Object postObjTest(HttpServletRequest request, TestModel obj) {
+		logger.info("数据绑定对象 ，POST请求:");
+		logger.info("数据绑定 ，request:" + request.getParameter("name") + ",绑定数据:" + obj.getName());
+		logger.info("数据绑定 ，request:" + request.getParameter("age") + ",绑定数据:" + obj.getAge());
+		logger.info("数据绑定 ，request:" + request.getParameter("good") + ",绑定数据:" + obj.isGood());
 		return "ovdata";
 	}
 
