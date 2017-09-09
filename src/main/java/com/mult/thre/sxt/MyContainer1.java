@@ -72,12 +72,11 @@ public class MyContainer1 {
 							}
 						}
 
-						try {
-							// Thread.sleep(1000);
-							TimeUnit.SECONDS.sleep(1);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+						// try {
+						// TimeUnit.SECONDS.sleep(1);
+						// } catch (Exception e) {
+						// e.printStackTrace();
+						// }
 					}
 					con.notifyAll();// 唤醒其它线程
 					System.out.println("t1 end");
