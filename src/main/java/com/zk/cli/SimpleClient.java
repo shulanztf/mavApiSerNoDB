@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class SimpleClient {
 
-	private static List<String> servers = new ArrayList<>();
+	private static List<String> servers = new ArrayList<String>();
 
 	public static void main(String[] args) {
 
