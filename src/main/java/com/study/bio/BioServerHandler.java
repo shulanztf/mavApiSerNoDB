@@ -1,4 +1,4 @@
-package com.study.nio;
+package com.study.bio;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,11 +39,11 @@ public class BioServerHandler implements Runnable {
 				// 如果得到非空值，就尝试计算结果并返回
 				if ((expression = in.readLine()) == null)
 					break;
-				System.out.println("服务器收到消息：" + expression);
+				System.out.println("服务器收到消息:" + expression);
 				try {
 					result = CalculatorUtils.cal(expression).toString();
 				} catch (Exception e) {
-					result = "计算错误：" + e.getMessage();
+					result = "计算错误:" + e.getMessage();
 				}
 				out.println(result);
 			}
