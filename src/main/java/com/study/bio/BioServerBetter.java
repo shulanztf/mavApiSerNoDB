@@ -20,7 +20,7 @@ public class BioServerBetter {
 	// 单例的ServerSocket
 	private static ServerSocket server;
 	// 线程池 懒汉式的单例
-	private static ExecutorService executorService = Executors.newFixedThreadPool(60);
+	private static ExecutorService executorService = Executors.newFixedThreadPool(3);
 	// 锁
 	private static Object lock = new Object();
 
@@ -52,10 +52,11 @@ public class BioServerBetter {
 		} finally {
 			// 一些必要的清理工作
 			if (server != null) {
-				System.out.println("服务器已关闭。");
 				server.close();
 				server = null;
+				System.out.println("服务器已关闭。");
 			}
 		}
 	}
+
 }

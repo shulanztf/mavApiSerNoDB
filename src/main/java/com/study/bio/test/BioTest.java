@@ -5,6 +5,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import com.study.bio.BioClient;
+import com.study.bio.BioServerBetter;
 import com.study.bio.BioServerNormal;
 
 /**
@@ -23,9 +24,9 @@ public class BioTest {
 			@Override
 			public void run() {
 				try {
-					// BioServerBetter.start();
-					BioServerNormal.start();
-				} catch (IOException e) {
+					// BioServerBetter.start();// 服务端源码__伪异步I/O
+					BioServerNormal.start();// 同步阻塞模式
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -55,5 +56,22 @@ public class BioTest {
 				}
 			}
 		}).start();
+
+		new Thread() {
+			@Override
+			public void run() {
+				while (true) {
+					// 随机产生算术表达式
+					String expression = random.nextInt(10) + "" + operators[random.nextInt(4)]
+							+ (random.nextInt(10) + 1);
+					BioClient.send(expression);
+					try {
+						Thread.currentThread().sleep(random.nextInt(1000));
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}.start();
 	}
 }
