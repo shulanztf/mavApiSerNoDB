@@ -34,18 +34,12 @@ public class NioServerHandle implements Runnable {
 	 */
 	public NioServerHandle(int port) {
 		try {
-			// 创建选择器
-			selector = Selector.open();
-			// 打开监听通道
-			serverChannel = ServerSocketChannel.open();
-			// 如果为 true，则此通道将被置于阻塞模式；如果为 false，则此通道将被置于非阻塞模式
-			serverChannel.configureBlocking(false);// 开启非阻塞模式
-			// 绑定端口 backlog设为1024
-			serverChannel.socket().bind(new InetSocketAddress(port), 1024);
-			// 监听客户端连接请求
-			serverChannel.register(selector, SelectionKey.OP_ACCEPT);
-			// 标记服务器已开启
-			started = true;
+			selector = Selector.open(); // 创建选择器
+			serverChannel = ServerSocketChannel.open(); // 打开监听通道
+			serverChannel.configureBlocking(false);// 开启非阻塞模式,如果为true，则此通道将被置于阻塞模式；如果为false，则此通道将被置于非阻塞模式
+			serverChannel.socket().bind(new InetSocketAddress(port), 1024); // 绑定端口backlog设为1024
+			serverChannel.register(selector, SelectionKey.OP_ACCEPT); // 监听客户端连接请求
+			started = true; // 标记服务器已开启
 			System.out.println("服务器已启动，端口号：" + port);
 		} catch (IOException e) {
 			e.printStackTrace();

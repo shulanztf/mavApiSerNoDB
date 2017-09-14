@@ -30,6 +30,37 @@ public class NioTest {
 		NioClient.start();
 
 		// 发送消息
+//		new Thread("th1") {
+//			@Override
+//			public void run() {
+//				try {
+//					while (true) {
+//						NioClient.sendMsg("线程1:" + Thread.currentThread().getName() + ":"
+//								+ Thread.currentThread().getId() + ":" + System.currentTimeMillis());
+//						TimeUnit.SECONDS.sleep(1);
+//					}
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//					return;
+//				}
+//			}
+//		}.start();
+//		new Thread("th2") {
+//			@Override
+//			public void run() {
+//				try {
+//					while (true) {
+//						NioClient.sendMsg("线程2:" + Thread.currentThread().getName() + ":"
+//								+ Thread.currentThread().getId() + ":" + System.currentTimeMillis());
+//						TimeUnit.SECONDS.sleep(1);
+//					}
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//					return;
+//				}
+//			}
+//		}.start();
+
 		while (NioClient.sendMsg(new Scanner(System.in).nextLine())) {
 		}
 
