@@ -135,12 +135,11 @@ public class NioServerHandle implements Runnable {
 					}
 					// 发送应答消息
 					doWrite(sc, result);
-				} else {
+				} else if (readBytes == 0) {
 					// 没有读取到字节 忽略
-				}
-				// 链路已经关闭，释放资源
-				else if (readBytes < 0) {
-					key.cancel();
+				} else if (readBytes < 0) {
+					// 链路已经关闭，释放资源
+					key.cancel();// 取消此键的通道到其选择器的注册。
 					sc.close();
 				}
 			}
@@ -149,16 +148,11 @@ public class NioServerHandle implements Runnable {
 
 	// 异步发送应答消息
 	private void doWrite(SocketChannel channel, String response) throws IOException {
-		// 将消息编码为字节数组
-		byte[] bytes = response.getBytes();
-		// 根据数组容量创建ByteBuffer
-		ByteBuffer writeBuffer = ByteBuffer.allocate(bytes.length);
-		// 将字节数组复制到缓冲区
-		writeBuffer.put(bytes);
-		// flip操作
-		writeBuffer.flip();
-		// 发送缓冲区的字节数组
-		channel.write(writeBuffer);
+		byte[] bytes = response.getBytes(); // 将消息编码为字节数组
+		ByteBuffer writeBuffer = ByteBuffer.allocate(bytes.length); // 根据数组容量创建ByteBuffer
+		writeBuffer.put(bytes); // 将字节数组复制到缓冲区
+		writeBuffer.flip(); // flip操作
+		channel.write(writeBuffer); // 发送缓冲区的字节数组
 		// ****此处不含处理“写半包”的代码
 	}
 

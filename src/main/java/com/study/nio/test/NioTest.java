@@ -24,13 +24,15 @@ public class NioTest {
 
 		// 避免客户端先于服务器启动前执行代码
 		// Thread.sleep(100);
-		TimeUnit.SECONDS.sleep(3);
+		TimeUnit.SECONDS.sleep(2);
 
 		// 运行客户端
 		NioClient.start();
-		while (NioClient.sendMsg(new Scanner(System.in).nextLine())) {
 
+		// 发送消息
+		while (NioClient.sendMsg(new Scanner(System.in).nextLine())) {
 		}
+
 	}
 
 }

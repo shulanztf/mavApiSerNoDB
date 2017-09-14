@@ -25,18 +25,17 @@ public class NioClient {
 			}
 			clientHandle = new NioClientHandle(ip, port);
 		}
-		new Thread(clientHandle, "Server").start();
+		new Thread(clientHandle, "NioClient" + System.currentTimeMillis()).start();
+		System.out.println("NIO 客户端启动:" + ip + ":" + port);
 	}
 
 	// 向服务器发送消息
 	public static boolean sendMsg(String msg) throws Exception {
-		if (msg.equals("q"))
+		if (msg.equals("q")) {
 			return false;
+		}
 		clientHandle.sendMsg(msg);
 		return true;
 	}
 
-	public static void main(String[] args) {
-		start();
-	}
 }
