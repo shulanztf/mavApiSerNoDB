@@ -9,6 +9,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import com.study.nio.util.CalculatorUtils;
 
@@ -95,8 +96,9 @@ public class NioServerHandle implements Runnable {
 	 * @param key
 	 * @throws IOException
 	 *             void
+	 * @throws InterruptedException
 	 */
-	private void handleInput(SelectionKey key) throws IOException {
+	private void handleInput(SelectionKey key) throws IOException, InterruptedException {
 		if (key.isValid()) {
 			// 处理新接入的请求消息
 			if (key.isAcceptable()) {
@@ -119,14 +121,17 @@ public class NioServerHandle implements Runnable {
 					byte[] bytes = new byte[bb.remaining()]; // 根据缓冲区可读字节数创建字节数组
 					bb.get(bytes); // 将缓冲区可读字节数组复制到新建的数组中
 					String expression = new String(bytes, "UTF-8");
-					System.out.println("服务器收到消息：" + expression);
+					System.out.println("NIO服务器收到消息:" + Thread.currentThread().getId() + ":" + expression);
 					// 处理数据
 					String result = null;
 					try {
 						result = CalculatorUtils.cal(expression).toString();
 					} catch (Exception e) {
 						result = "计算错误：" + e.getMessage();
+						System.out.println("服务端异常发生:" + Thread.currentThread().getId() + ":" + result);
+						TimeUnit.SECONDS.sleep(3);// 出现异常，暂停5秒
 					}
+					System.out.println("服务器处理结果:" + Thread.currentThread().getId() + ":" + result);
 					// 发送应答消息
 					doWrite(sc, result);
 				} else if (readBytes == 0) {

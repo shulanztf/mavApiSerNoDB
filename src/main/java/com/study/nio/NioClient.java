@@ -34,6 +34,7 @@ public class NioClient {
 		if (msg.equals("q")) {
 			return false;
 		}
+		System.out.println("NIO客户端:" + Thread.currentThread().getId() + ":" + msg);
 		clientHandle.sendMsg(msg);
 		return true;
 	}

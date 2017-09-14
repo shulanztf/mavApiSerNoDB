@@ -105,7 +105,7 @@ public class NioClientHandle implements Runnable {
 					byte[] bytes = new byte[buffer.remaining()]; // 根据缓冲区可读字节数创建字节数组
 					buffer.get(bytes); // 将缓冲区可读字节数组复制到新建的数组中
 					String result = new String(bytes, "UTF-8");
-					System.out.println("客户端收到消息：" + result);
+					System.out.println("NIO客户端收到消息:" + Thread.currentThread().getId() + ":" + result);
 				} else if (readBytes == 0) {
 					// 没有读取到字节 忽略
 				} else if (readBytes < 0) {
