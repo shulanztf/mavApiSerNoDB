@@ -30,5 +30,14 @@ public class TimeClient {
 			e.printStackTrace();
 		}
 
+		for (int i = 2; i < 20; i++) {
+			try {
+				new Thread(new AsyncTimeClientHandler("127.0.0.1", port), "AIO Client" + i).start();
+				new Thread(new AsyncHhcfClientHandler("127.0.0.1", port), "AIO-HH-Client" + i).start();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
 	}
 }

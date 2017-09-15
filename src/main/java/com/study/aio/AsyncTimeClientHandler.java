@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 /**
  * 
  * @Title: AsyncTimeClientHandler
- * @Description:
+ * @Description:AIO服务端总线入口
  * @see http://www.cnblogs.com/hujiapeng/p/7233760.html
  * @Author: zhaotf
  * @Since:2017年9月14日 下午4:15:16

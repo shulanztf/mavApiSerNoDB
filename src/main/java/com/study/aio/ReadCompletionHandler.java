@@ -9,8 +9,6 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 
-import com.controller.BootStarpController;
-
 /**
  * 
  * @Title: ReadCompletionHandler
@@ -38,20 +36,10 @@ public class ReadCompletionHandler implements CompletionHandler<Integer, ByteBuf
 		try {
 			String request = new String(body, "UTF-8");
 			logger.info("AIO服务端接收到的信息 : " + request);
-			String currentTime = "QUERY TIME ORDER".equalsIgnoreCase(request) ? new Date().toString() : "BAD ORDER";
+			String currentTime = "AIO处理结果:" + Thread.currentThread().getName() + ":" + Thread.currentThread().getId()
+					+ ":" + new Date().toString();
 			doWrite(currentTime);
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-			logger.error(e);
-		}
-	}
-
-	@Override
-	public void failed(Throwable exc, ByteBuffer attachment) {
-		try {
-			socketChannel.close();
-		} catch (IOException e) {
-			e.printStackTrace();
 			logger.error(e);
 		}
 	}
@@ -82,4 +70,14 @@ public class ReadCompletionHandler implements CompletionHandler<Integer, ByteBuf
 			});
 		}
 	}
+
+	@Override
+	public void failed(Throwable exc, ByteBuffer attachment) {
+		try {
+			socketChannel.close();
+		} catch (IOException e) {
+			logger.error(e);
+		}
+	}
+
 }
