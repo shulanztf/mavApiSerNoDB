@@ -61,6 +61,7 @@ public class AsyncTimeClientHandler implements CompletionHandler<Void, AsyncTime
 					// 接收服务端返回信息
 					ByteBuffer readBuffer = ByteBuffer.allocate(1024);
 					socketChannel.read(readBuffer, readBuffer, new CompletionHandler<Integer, ByteBuffer>() {
+
 						@Override
 						public void completed(Integer result, ByteBuffer attachment) {
 							attachment.flip();
@@ -74,12 +75,12 @@ public class AsyncTimeClientHandler implements CompletionHandler<Void, AsyncTime
 								e.printStackTrace();
 								logger.error(e);
 							}
-
 						}
 
 						@Override
 						public void failed(Throwable exc, ByteBuffer attachment) {
 							try {
+								logger.error(exc);
 								socketChannel.close();
 								latch.countDown();
 							} catch (IOException e) {

@@ -24,8 +24,8 @@ public class TimeClient {
 		}
 
 		try {
-			new Thread(new AsyncTimeClientHandler("127.0.0.1", port), "AIOClient1").start();
-			new Thread(new AsyncTimeClientHandler("127.0.0.1", port), "AIOClient2").start();
+			new Thread(new AsyncTimeClientHandler("127.0.0.1", port), "AIO Client1").start();
+			new Thread(new AsyncHhcfClientHandler("127.0.0.1", port), "AIO-HH-Client2").start();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
