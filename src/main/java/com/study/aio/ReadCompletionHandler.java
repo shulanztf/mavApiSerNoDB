@@ -50,6 +50,7 @@ public class ReadCompletionHandler implements CompletionHandler<Integer, ByteBuf
 			final ByteBuffer writeBuffer = ByteBuffer.allocate(bytes.length);
 			writeBuffer.put(bytes);
 			writeBuffer.flip();
+			// 把收到的直接返回给客户端
 			socketChannel.write(writeBuffer, writeBuffer, new CompletionHandler<Integer, ByteBuffer>() {
 				@Override
 				public void completed(Integer result, ByteBuffer attachment) {

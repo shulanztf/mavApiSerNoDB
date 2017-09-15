@@ -22,7 +22,7 @@ public class AcceptCompletionHandler implements CompletionHandler<AsynchronousSo
 	 * @param result
 	 *            客户端管道/socket
 	 * @param attachment
-	 *            服务端通道/socket
+	 *            服务端入口/通道/socket
 	 */
 	@Override
 	public void completed(AsynchronousSocketChannel result, AsyncTimeServerHandler attachment) {
