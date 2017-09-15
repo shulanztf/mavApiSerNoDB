@@ -46,11 +46,11 @@ public class AsyncTimeClientHandler implements CompletionHandler<Void, AsyncTime
 
 	@Override
 	public void completed(Void result, AsyncTimeClientHandler attachment) {
-		byte[] request = "QUERY TIME ORDER".getBytes();
-		ByteBuffer writeBuffer = ByteBuffer.allocate(request.length);
-		writeBuffer.put(request);
-		writeBuffer.flip();
-		socketChannel.write(writeBuffer, writeBuffer, new CompletionHandler<Integer, ByteBuffer>() {
+		byte[] req = "QUERY TIME ORDER".getBytes();
+		ByteBuffer bf = ByteBuffer.allocate(req.length);
+		bf.put(req);
+		bf.flip();
+		socketChannel.write(bf, bf, new CompletionHandler<Integer, ByteBuffer>() {
 			@Override
 			public void completed(Integer result, ByteBuffer attachment) {
 				if (attachment.hasRemaining()) {
