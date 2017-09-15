@@ -55,8 +55,10 @@ public class AsyncTimeClientHandler implements CompletionHandler<Void, AsyncTime
 			@Override
 			public void completed(Integer result, ByteBuffer attachment) {
 				if (attachment.hasRemaining()) {
+					// 发送信息
 					socketChannel.write(attachment, attachment, this);
 				} else {
+					// 接收服务端返回信息
 					ByteBuffer readBuffer = ByteBuffer.allocate(1024);
 					socketChannel.read(readBuffer, readBuffer, new CompletionHandler<Integer, ByteBuffer>() {
 						@Override
