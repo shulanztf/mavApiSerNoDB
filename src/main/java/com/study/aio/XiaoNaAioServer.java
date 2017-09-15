@@ -9,7 +9,6 @@ import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
-import java.nio.channels.WritePendingException;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.util.LinkedList;
@@ -26,7 +25,7 @@ import java.util.concurrent.Executors;
  * @Version:1.0
  */
 public class XiaoNaAioServer {
-	private final AsynchronousServerSocketChannel server;
+	private final AsynchronousServerSocketChannel aServerSocket;
 	/**
 	 * 写队列，因为当前一个异步写调用还没完成之前，调用异步写会抛WritePendingException,所以需要一个写队列来缓存要写入的数据，
 	 * 这是AIO比较坑的地方
@@ -38,9 +37,9 @@ public class XiaoNaAioServer {
 		// 设置线程数为CPU核数
 		AsynchronousChannelGroup channelGroup = AsynchronousChannelGroup
 				.withFixedThreadPool(Runtime.getRuntime().availableProcessors(), Executors.defaultThreadFactory());
-		server = AsynchronousServerSocketChannel.open(channelGroup);
-		server.setOption(StandardSocketOptions.SO_REUSEADDR, true); // 重用端口
-		server.bind(new InetSocketAddress(8383), 80); // 绑定端口并设置连接请求队列长度
+		aServerSocket = AsynchronousServerSocketChannel.open(channelGroup);
+		aServerSocket.setOption(StandardSocketOptions.SO_REUSEADDR, true); // 重用端口
+		aServerSocket.bind(new InetSocketAddress(8383), 80); // 绑定端口并设置连接请求队列长度
 	}
 
 	/**
@@ -51,12 +50,12 @@ public class XiaoNaAioServer {
 	public void listen() {
 		System.out.println(Thread.currentThread().getName() + ": AIO服务端 方法:listen ");
 		// 开始接受第一个连接请求
-		server.accept(null, new CompletionHandler<AsynchronousSocketChannel, Object>() {
+		aServerSocket.accept(null, new CompletionHandler<AsynchronousSocketChannel, Object>() {
 
 			@Override
 			public void completed(AsynchronousSocketChannel channel, Object attachment) {
 				System.out.println(Thread.currentThread().getName() + ": AIO服务端 方法:completed ");
-				server.accept(null, this); // 先安排处理下一个连接请求，异步非阻塞调用，所以不用担心挂住了;这里传入this是个地雷，小心多线程
+				aServerSocket.accept(null, this); // 先安排处理下一个连接请求，异步非阻塞调用，所以不用担心挂住了;这里传入this是个地雷，小心多线程
 				handle(channel); // 处理连接读写
 			}
 

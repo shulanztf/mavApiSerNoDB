@@ -7,15 +7,21 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.Date;
 
+import org.apache.log4j.Logger;
+
+import com.controller.BootStarpController;
+
 /**
  * 
  * @Title: ReadCompletionHandler
  * @Description:
+ * @see http://www.cnblogs.com/hujiapeng/p/7233760.html
  * @Author: zhaotf
  * @Since:2017年9月14日 下午4:13:07
  * @Version:1.0
  */
 public class ReadCompletionHandler implements CompletionHandler<Integer, ByteBuffer> {
+	private static final Logger logger = Logger.getLogger(ReadCompletionHandler.class);
 	private AsynchronousSocketChannel socketChannel;
 
 	public ReadCompletionHandler(AsynchronousSocketChannel socketChannel) {
@@ -31,11 +37,12 @@ public class ReadCompletionHandler implements CompletionHandler<Integer, ByteBuf
 		attachment.get(body);
 		try {
 			String request = new String(body, "UTF-8");
-			System.out.println("The time server receive order : " + request);
+			logger.info("AIO服务端接收到的信息 : " + request);
 			String currentTime = "QUERY TIME ORDER".equalsIgnoreCase(request) ? new Date().toString() : "BAD ORDER";
 			doWrite(currentTime);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
+			logger.error(e);
 		}
 	}
 
@@ -45,6 +52,7 @@ public class ReadCompletionHandler implements CompletionHandler<Integer, ByteBuf
 			socketChannel.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+			logger.error(e);
 		}
 	}
 
@@ -68,7 +76,7 @@ public class ReadCompletionHandler implements CompletionHandler<Integer, ByteBuf
 					try {
 						socketChannel.close();
 					} catch (IOException e) {
-
+						logger.error(e);
 					}
 				}
 			});

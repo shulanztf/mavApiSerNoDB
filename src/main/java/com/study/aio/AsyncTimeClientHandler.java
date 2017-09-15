@@ -8,18 +8,23 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.concurrent.CountDownLatch;
 
+import org.apache.log4j.Logger;
+
 /**
  * 
  * @Title: AsyncTimeClientHandler
  * @Description:
+ * @see http://www.cnblogs.com/hujiapeng/p/7233760.html
  * @Author: zhaotf
  * @Since:2017年9月14日 下午4:15:16
  * @Version:1.0
  */
 public class AsyncTimeClientHandler implements CompletionHandler<Void, AsyncTimeClientHandler>, Runnable {
+	private static final Logger logger = Logger.getLogger(AsyncTimeClientHandler.class);
 	private AsynchronousSocketChannel socketChannel;
 	private String host;
 	private int port;
+	/** 线程门闩 */
 	private CountDownLatch latch;
 
 	public AsyncTimeClientHandler(String host, int port) throws IOException {
@@ -33,20 +38,16 @@ public class AsyncTimeClientHandler implements CompletionHandler<Void, AsyncTime
 		latch = new CountDownLatch(1);
 		socketChannel.connect(new InetSocketAddress(host, port), this, this);
 		try {
-			latch.await();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		try {
+			latch.await();// 因为AIO异常非阻塞，需要主线程等待
 			socketChannel.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error(e);
 		}
 	}
 
 	@Override
 	public void completed(Void result, AsyncTimeClientHandler attachment) {
-		byte[] req = "QUERY TIME ORDER".getBytes();
+		byte[] req = ("队列时间排列" + Thread.currentThread().getName()).getBytes();
 		ByteBuffer bf = ByteBuffer.allocate(req.length);
 		bf.put(req);
 		bf.flip();
@@ -65,10 +66,11 @@ public class AsyncTimeClientHandler implements CompletionHandler<Void, AsyncTime
 							attachment.get(bytes);
 							try {
 								String body = new String(bytes, "UTF-8");
-								System.out.println("Now is " + body);
-								latch.countDown();
+								logger.info("AIO客户端，接收服务端返回信息:" + body);
+								latch.countDown();// 释放线程
 							} catch (UnsupportedEncodingException e) {
 								e.printStackTrace();
+								logger.error(e);
 							}
 
 						}
@@ -79,7 +81,8 @@ public class AsyncTimeClientHandler implements CompletionHandler<Void, AsyncTime
 								socketChannel.close();
 								latch.countDown();
 							} catch (IOException e) {
-
+								e.printStackTrace();
+								logger.error(e);
 							}
 						}
 					});
@@ -92,7 +95,8 @@ public class AsyncTimeClientHandler implements CompletionHandler<Void, AsyncTime
 					socketChannel.close();
 					latch.countDown();
 				} catch (IOException e) {
-
+					e.printStackTrace();
+					logger.error(e);
 				}
 			}
 		});
@@ -106,6 +110,7 @@ public class AsyncTimeClientHandler implements CompletionHandler<Void, AsyncTime
 			latch.countDown();
 		} catch (IOException e) {
 			e.printStackTrace();
+			logger.error(e);
 		}
 	}
 
