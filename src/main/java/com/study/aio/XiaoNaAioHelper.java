@@ -57,25 +57,25 @@ public class XiaoNaAioHelper {
 	 */
 	public static String getAnswer(String key) {
 		String answer = null;
-		switch (key) {
-		case "who":
-			answer = "我是小娜\n";
-			break;
-		case "what":
-			answer = "我是来帮你解闷的\n";
-			break;
-		case "where":
-			answer = "我来自外太空\n";
-			break;
-		case "hi":
-			answer = "hello\n";
-			break;
-		case "bye":
-			answer = "88\n";
-			break;
-		default:
-			answer = "请输入 who， 或者what， 或者where";
-		}
+//		switch (key) {
+//		case "who":
+//			answer = "我是小娜\n";
+//			break;
+//		case "what":
+//			answer = "我是来帮你解闷的\n";
+//			break;
+//		case "where":
+//			answer = "我来自外太空\n";
+//			break;
+//		case "hi":
+//			answer = "hello\n";
+//			break;
+//		case "bye":
+//			answer = "88\n";
+//			break;
+//		default:
+//			answer = "请输入 who， 或者what， 或者where";
+//		}
 		return answer;
 	}
 
