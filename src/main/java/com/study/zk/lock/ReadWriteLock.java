@@ -12,7 +12,8 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
  * 
  * @ClassName: ReadWriteLock
  * @Description: ZK的分布式读写锁
- * @see http://blog.csdn.net/nimasike/article/details/51581755
+ * @see http://blog.csdn.net/nimasike/article/details/51581755\
+ * @see http://blog.csdn.net/haoyuyang/article/details/53469269
  * @author: zhaotf
  * @date: 2017年9月17日 下午4:08:53
  */
@@ -24,12 +25,15 @@ public class ReadWriteLock {
 	 */
 	public static void main(String[] args) throws Exception {
 		RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
-		CuratorFramework client = CuratorFrameworkFactory.newClient(
-				"192.168.0.123:2181", retryPolicy);
+		// CuratorFramework client = CuratorFrameworkFactory.newClient(
+		// "192.168.159.131:2182", retryPolicy);
+		CuratorFramework client = CuratorFrameworkFactory.builder()
+				.connectString("192.168.159.131:2181,192.168.159.131:2182,192.168.159.131:2183").sessionTimeoutMs(5000)
+				.retryPolicy(retryPolicy).build();
+
 		client.start();
 
-		InterProcessReadWriteLock readWriteLock = new InterProcessReadWriteLock(
-				client, "/read-write-lock");
+		InterProcessReadWriteLock readWriteLock = new InterProcessReadWriteLock(client, "/read-write-lock");
 
 		// 读锁
 		final InterProcessMutex readLock = readWriteLock.readLock();
