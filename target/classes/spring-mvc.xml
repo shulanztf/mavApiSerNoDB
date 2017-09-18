@@ -19,16 +19,11 @@
 		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
 		<property name="interceptors">
 			<list>
-				<!-- 日志拦截器，这是你自定义的拦截器
-				<ref bean="logNDCInteceptor" />   
-				 -->
-				   <!-- RequestHelper拦截器，这是你自定义的拦截器
-				<ref bean="myRequestHelperInteceptor" />
-				    -->
-				    <!-- 
-				<ref bean="myPermissionsInteceptor" />  权限拦截器，这是你自定义的拦截器 -->
-				 <!-- 
-				<ref bean="myUserInfoInteceptor" /> 用户信息拦截器，这是你自定义的拦截器 -->
+				<!-- 日志拦截器，这是你自定义的拦截器 <ref bean="logNDCInteceptor" /> -->
+				<!-- RequestHelper拦截器，这是你自定义的拦截器 <ref bean="myRequestHelperInteceptor" 
+					/> -->
+				<!-- <ref bean="myPermissionsInteceptor" /> 权限拦截器，这是你自定义的拦截器 -->
+				<!-- <ref bean="myUserInfoInteceptor" /> 用户信息拦截器，这是你自定义的拦截器 -->
 			</list>
 		</property>
 	</bean>
@@ -66,7 +61,7 @@
 		class="org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter" />
 	<!-- 处理json -->
 	<bean id="jackson_hmc"
-		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+		class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
 
 
 	<!-- 视图解释类 -->
@@ -76,41 +71,48 @@
 		<property name="suffix" value=".jsp"></property>
 	</bean>
 
-	<!-- 总错误处理
-	<bean id="exceptionResolver"
-		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
-		<property name="defaultErrorView">
-			<value>/error/error</value>
-		</property>
-		<property name="defaultStatusCode">
-			<value>500</value>
-		</property>
-		<property name="warnLogCategory">
-			<value>org.springframework.web.servlet.handler.SimpleMappingExceptionResolver
-			</value>
-		</property>
-	</bean>
-	 -->
+	<!-- 总错误处理 <bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver"> 
+		<property name="defaultErrorView"> <value>/error/error</value> </property> 
+		<property name="defaultStatusCode"> <value>500</value> </property> <property 
+		name="warnLogCategory"> <value>org.springframework.web.servlet.handler.SimpleMappingExceptionResolver 
+		</value> </property> </bean> -->
 
 	<!-- 启用spring mvc 注解 <mvc:annotation-driven> <mvc:message-converters> <bean 
 		id="jsonConverter" class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter"> 
 		<property name="supportedMediaTypes"> <list> <value>text/html;charset=UTF-8</value> 
 		</list> </property> </bean> </mvc:message-converters> </mvc:annotation-driven> -->
 
-	<!-- springmvc传json值时的乱码解决 -->
-	<mvc:annotation-driven>
-		<mvc:message-converters>
-			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
-				<property name="supportedMediaTypes">
-					<list>
-						<value>application/json;charset=UTF-8</value>
-					</list>
-				</property>
-			</bean>
-		</mvc:message-converters>
-	</mvc:annotation-driven>
+	<!-- springmvc传json值时的乱码解决 <mvc:annotation-driven> <mvc:message-converters> 
+		<bean class="org.springframework.http.converter.StringHttpMessageConverter"> 
+		<property name="supportedMediaTypes"> <list> <value>application/json;charset=UTF-8</value> 
+		</list> </property> </bean> </mvc:message-converters> </mvc:annotation-driven> -->
+
+	<!-- SpringMVC 传参控制 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
+		p:defaultEncoding="UTF-8" p:maxUploadSize="2097152">
+		<property name="maxInMemorySize">
+			<value>4096</value>
+		</property>
+	</bean>
+
+	<!-- Bean解析器,级别高于默认解析器,寻找bean对象进行二次处理 -->
+	<bean id="beanNameViewResolver"
+		class="org.springframework.web.servlet.view.BeanNameViewResolver"
+		p:order="0">
+	</bean>
+
+	<!-- Excel 处理 根据用户输入进行对象处理 -->
+	<bean id="jeecgExcelView" class="org.ztfframework.poi.excel.view.ZtfJeecgSingleExcelView" />
+	<bean id="jeecgTemplateExcelView"
+		class="org.ztfframework.poi.excel.view.HhcfJeecgSingleExcelView" />
+	<!-- <bean id="jeecgExcelView" class="org.jeecgframework.poi.excel.view.JeecgSingleExcelView" 
+		/> -->
+	<bean id="jeecgTemplateWordView" class="org.jeecgframework.poi.excel.view.JeecgTemplateWordView" />
+	<bean id="jeecgMapExcelView" class="org.jeecgframework.poi.excel.view.JeecgMapExcelView" />
 
 
 
+	<mvc:annotation-driven />
 </beans> 
  

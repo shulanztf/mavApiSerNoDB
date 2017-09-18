@@ -16,12 +16,46 @@
 		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 
 		<redis.version>1.7.5.RELEASE</redis.version>
-		<spring.version>3.2.18.RELEASE</spring.version>
+		<spring.version>3.1.1.RELEASE</spring.version>
 		<spring.security.version>3.2.10.RELEASE</spring.security.version>
 		<cxf.version>3.0.2</cxf.version>
+		<!-- json start -->
+		<jackson.version>1.8.4</jackson.version>
+		<jacksonframework.version>1.84</jacksonframework.version>
+		<json-lib.version>2.1</json-lib.version>
+		<fastjson-lib.version>1.2.6</fastjson-lib.version>
+		<gson.version>2.2.4</gson.version>
+		<!-- json start -->
+
+		<poi.version>3.9</poi.version>
+		<easypoi.version>2.1.4</easypoi.version>
+		<antlr.version>3.3</antlr.version>
+		<openoffice.version>3.2.1</openoffice.version>
+		<jodconverter.version>3.0-beta-4</jodconverter.version>
+		<xwork-core.version>2.1.6</xwork-core.version>
+
 	</properties>
 
+
 	<repositories>
+		<repository>
+			<id>mvn</id>
+			<name>mvn Repository</name>
+			<url>http://mvnrepository.com/artifact</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>outof</id>
+			<name>outof Repository</name>
+			<url>http://maven.outofmemory.cn/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
 		<repository>
 			<id>central</id>
 			<name>Central Repository</name>
@@ -73,12 +107,8 @@
 	</repositories>
 
 	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.7</version>
-			<scope>test</scope>
-		</dependency>
+		<!-- <dependency> <groupId>junit</groupId> <artifactId>junit</artifactId> 
+			<version>4.7</version> <scope>test</scope> </dependency> -->
 		<!-- springMVC start -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -106,7 +136,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-asm</artifactId>
-			<version>3.1.4.RELEASE</version>
+			<version>${spring.version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
@@ -447,6 +477,12 @@
 			<artifactId>jedis</artifactId>
 			<version>2.9.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-redis</artifactId>
+			<version>1.8.0.RELEASE</version>
+		</dependency>
+
 		<!-- redis end -->
 
 		<!-- hbase start <dependency> <groupId>org.apache.hbase</groupId> <artifactId>hbase</artifactId> 
@@ -465,6 +501,183 @@
 			<version>${cxf.version}</version>
 		</dependency>
 		<!-- 杂类 end -->
+		<!-- JSON begin -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>${json-lib.version}</version>
+			<classifier>jdk15</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>${fastjson-lib.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>${gson.version}</version>
+		</dependency>
+		<!-- JSON end -->
+
+		<!-- FTP start -->
+		<!-- https://mvnrepository.com/artifact/commons-net/commons-net <dependency> 
+			<groupId>commons-net</groupId> <artifactId>commons-net</artifactId> <version>3.2</version> 
+			</dependency> -->
+		<!-- https://mvnrepository.com/artifact/org.apache.camel/camel-ftp -->
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-ftp</artifactId>
+			<version>2.18.0</version>
+		</dependency>
+		<!-- FTP end -->
+
+		<!-- SFTP start -->
+		<dependency>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
+			<version>0.1.52</version>
+		</dependency>
+		<!-- SFTP end -->
+
+		<!-- rpc thrift start -->
+		<dependency>
+			<groupId>org.apache.thrift</groupId>
+			<artifactId>libthrift</artifactId>
+			<version>0.10.0</version>
+		</dependency>
+		<!-- rpc thrift end -->
+
+		<!-- poi start -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>${poi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>${poi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml-schemas</artifactId>
+			<version>${poi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-scratchpad</artifactId>
+			<version>${poi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jeecgframework</groupId>
+			<artifactId>easypoi-base</artifactId>
+			<version>${easypoi.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jeecg</groupId>
+					<artifactId>easypoi-annotation</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.jeecgframework</groupId>
+			<artifactId>easypoi-web</artifactId>
+			<version>${easypoi.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jeecg</groupId>
+					<artifactId>easypoi-base</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.jeecgframework</groupId>
+			<artifactId>easypoi-annotation</artifactId>
+			<version>${easypoi.version}</version>
+		</dependency>
+		<!-- poi end -->
+
+		<!-- openoffice start -->
+		<dependency>
+			<groupId>org.openoffice</groupId>
+			<artifactId>juh</artifactId>
+			<version>${openoffice.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openoffice</groupId>
+			<artifactId>unoil</artifactId>
+			<version>${openoffice.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openoffice</groupId>
+			<artifactId>jurt</artifactId>
+			<version>${openoffice.version}</version>
+		</dependency>
+		<!-- java的OpenDucument文件转换器，它利用OpenOffice来进行转换工作 <dependency> <groupId>org.artofsolving</groupId> 
+			<artifactId>jodconverter</artifactId> <version>${jodconverter.version}</version> 
+			</dependency> -->
+		<!-- openoffice end -->
+		<dependency>
+			<groupId>com.opensymphony</groupId>
+			<artifactId>xwork-core</artifactId>
+			<version>${xwork-core.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.9.10</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>4.1.15.Final</version>
+		</dependency>
+		<!-- <dependency> <groupId>io.netty</groupId> <artifactId>netty</artifactId> 
+			<version>3.10.6.Final</version> </dependency> -->
+
+		<!-- zookeeper start -->
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-client</artifactId>
+			<version>3.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-recipes</artifactId>
+			<version>3.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-framework</artifactId>
+			<version>3.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.zookeeper</groupId>
+			<artifactId>zookeeper</artifactId>
+			<version>3.4.9</version>
+		</dependency>
+		<dependency>
+			<groupId>zkclient</groupId>
+			<artifactId>zkclient</artifactId>
+			<version>0.3</version>
+		</dependency>
+
+		<!-- zookeeper end -->
+
+
 
 	</dependencies>
 
