@@ -33,8 +33,7 @@ public class BootStarpController {
 
 	/**
 	 * @category nginx反向代理
-	 * @see http://localhost:8080/mavApiSerNoDB/bootStarpController/
-	 *      nginxReversedProxy.do
+	 * @see http://localhost:8080/mavApiSerNoDB/bootStarpController/nginxReversedProxy.do
 	 * @param request
 	 * @param response
 	 * @param model

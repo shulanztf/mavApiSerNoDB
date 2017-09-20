@@ -1,11 +1,9 @@
 package com.study.bio.test;
 
-import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import com.study.bio.BioClient;
-import com.study.bio.BioServerBetter;
 import com.study.bio.BioServerNormal;
 
 /**

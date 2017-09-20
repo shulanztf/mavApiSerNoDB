@@ -1,16 +1,7 @@
 package com.others;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.security.AccessControlContext;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-import java.util.Set;
-
-import javax.security.auth.Subject;
 
 import com.proxy.Person;
 
