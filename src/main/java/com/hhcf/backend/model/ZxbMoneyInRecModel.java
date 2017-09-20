@@ -1,4 +1,4 @@
-package com.model;
+package com.hhcf.backend.model;
 
 import java.math.BigDecimal;
 

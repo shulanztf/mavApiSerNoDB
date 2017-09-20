@@ -1,12 +1,12 @@
-package com.service;
+package com.hhcf.backend.service;
 
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.model.HmAppProductMgEntity;
-import com.model.ZxbMoneyInRecModel;
-import com.model.ZxbMoneyOutRecModel;
+import com.hhcf.backend.model.HmAppProductMgEntity;
+import com.hhcf.backend.model.ZxbMoneyInRecModel;
+import com.hhcf.backend.model.ZxbMoneyOutRecModel;
 
 /**
  * @Title: GeneralService

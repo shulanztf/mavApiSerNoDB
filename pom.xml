@@ -15,7 +15,6 @@
 		<!-- 编译时的编码 -->
 		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 
-		<redis.version>1.7.5.RELEASE</redis.version>
 		<spring.version>3.1.1.RELEASE</spring.version>
 		<spring.security.version>3.2.10.RELEASE</spring.security.version>
 		<cxf.version>3.0.2</cxf.version>
@@ -114,15 +113,11 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
 			<version>${spring.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 			<version>${spring.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<!-- springMVC end -->
 		<!-- spring 依赖包 -->
@@ -130,100 +125,62 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
 			<version>${spring.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-asm</artifactId>
 			<version>${spring.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aspects</artifactId>
 			<version>${spring.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
 			<version>${spring.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>${spring.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 			<version>${spring.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${spring.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-expression</artifactId>
 			<version>${spring.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<!-- -->
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
-			<version>${spring.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
 			<artifactId>spring-jms</artifactId>
 			<version>${spring.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-			<version>${spring.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-oxm</artifactId>
 			<version>${spring.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
 			<version>${spring.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<version>${spring.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<!-- spring end -->
 
@@ -466,25 +423,6 @@
 		</dependency>
 		<!-- pdf转换包 end -->
 
-		<!-- redis start -->
-		<dependency>
-			<groupId>org.redisson</groupId>
-			<artifactId>redisson</artifactId>
-			<version>1.0.2</version>
-		</dependency>
-		<dependency>
-			<groupId>redis.clients</groupId>
-			<artifactId>jedis</artifactId>
-			<version>2.9.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-redis</artifactId>
-			<version>1.8.0.RELEASE</version>
-		</dependency>
-
-		<!-- redis end -->
-
 		<!-- hbase start <dependency> <groupId>org.apache.hbase</groupId> <artifactId>hbase</artifactId> 
 			<version>0.98.23</version> </dependency> -->
 		<!-- hbase end -->
@@ -677,6 +615,37 @@
 
 		<!-- zookeeper end -->
 
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpclient</artifactId>
+		    <version>4.5.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime -->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpmime</artifactId>
+		    <version>4.5.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/fluent-hc -->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>fluent-hc</artifactId>
+		    <version>4.5.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpasyncclient -->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpasyncclient</artifactId>
+		    <version>4.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpcore</artifactId>
+		    <version>4.4.5</version>
+		</dependency>
+		
 
 
 	</dependencies>

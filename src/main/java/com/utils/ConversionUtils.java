@@ -7,7 +7,7 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 
-import com.model.TestModel;
+import com.hhcf.backend.model.TestModel;
 
 /**
  * spring 数据转换工具类

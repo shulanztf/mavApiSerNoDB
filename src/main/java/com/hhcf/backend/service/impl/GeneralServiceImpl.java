@@ -1,4 +1,4 @@
-package com.service.impl;
+package com.hhcf.backend.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,10 +7,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
 
-import com.model.HmAppProductMgEntity;
-import com.model.ZxbMoneyInRecModel;
-import com.model.ZxbMoneyOutRecModel;
-import com.service.GeneralService;
+import com.hhcf.backend.model.HmAppProductMgEntity;
+import com.hhcf.backend.model.ZxbMoneyInRecModel;
+import com.hhcf.backend.model.ZxbMoneyOutRecModel;
+import com.hhcf.backend.service.GeneralService;
 
 /**
  * @Title: GeneralServiceImpl

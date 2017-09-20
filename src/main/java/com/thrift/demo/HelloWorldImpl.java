@@ -5,7 +5,7 @@ import java.util.Date;
 import org.apache.thrift.TException;
 
 import com.alibaba.fastjson.JSON;
-import com.model.TestModel;
+import com.hhcf.backend.model.TestModel;
 
 /**
  * RPC远程服务调用 thrift

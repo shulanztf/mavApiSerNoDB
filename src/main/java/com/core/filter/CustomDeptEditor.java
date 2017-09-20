@@ -2,7 +2,7 @@ package com.core.filter;
 
 import java.beans.PropertyEditorSupport;
 
-import com.model.UserEntity;
+import com.hhcf.backend.model.UserEntity;
 
 /**
  * 自定义的属性编辑器
