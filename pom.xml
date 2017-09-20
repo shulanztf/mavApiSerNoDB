@@ -207,21 +207,6 @@
 		</dependency>
 		<!-- spring security end -->
 
-		<!-- hibernate start <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-core</artifactId> 
-			<version>4.2.3.Final</version> </dependency> <dependency> <groupId>org.hibernate</groupId> 
-			<artifactId>hibernate-ehcache</artifactId> <version>4.1.0.Final</version> 
-			</dependency> <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-proxool</artifactId> 
-			<version>4.1.0.Final</version> </dependency> <dependency> <groupId>org.hibernate.common</groupId> 
-			<artifactId>hibernate-commons-annotations</artifactId> <version>4.0.2.Final</version> 
-			</dependency> <dependency> <groupId>org.hibernate.javax.persistence</groupId> 
-			<artifactId>hibernate-jpa-2.0-api</artifactId> <version>1.0.1.Final</version> 
-			</dependency> <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-validator</artifactId> 
-			<version>4.2.0.Final</version> </dependency> <dependency> <groupId>org.hibernate</groupId> 
-			<artifactId>hibernate-validator-annotation-processor</artifactId> <version>4.2.0.Final</version> 
-			</dependency> -->
-		<!-- hibernate end -->
-
-
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
@@ -422,10 +407,6 @@
 			<version>9.0.6</version>
 		</dependency>
 		<!-- pdf转换包 end -->
-
-		<!-- hbase start <dependency> <groupId>org.apache.hbase</groupId> <artifactId>hbase</artifactId> 
-			<version>0.98.23</version> </dependency> -->
-		<!-- hbase end -->
 
 		<!-- 杂类 start -->
 		<dependency>
