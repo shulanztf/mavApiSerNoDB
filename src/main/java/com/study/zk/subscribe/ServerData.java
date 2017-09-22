@@ -1,4 +1,4 @@
-package com.zk.subscribe;
+package com.study.zk.subscribe;
 
 /**
  * 

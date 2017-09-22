@@ -1,4 +1,4 @@
-package com.zk.cli;
+package com.study.zk.cli;
 
 import java.io.BufferedReader;
 import java.io.IOException;

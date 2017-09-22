@@ -1,4 +1,4 @@
-package com.zk.ser;
+package com.study.zk.ser;
 
 import java.io.BufferedReader;
 import java.io.IOException;

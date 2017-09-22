@@ -1,4 +1,4 @@
-package com.zk.subscribe;
+package com.study.zk.subscribe;
 
 import org.I0Itec.zkclient.IZkDataListener;
 import org.I0Itec.zkclient.ZkClient;
