@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.serialize.BytesPushThroughSerializer;
+import org.apache.log4j.Logger;
 
 /**
  * 
@@ -17,11 +18,14 @@ import org.I0Itec.zkclient.serialize.BytesPushThroughSerializer;
  * @Version:1.0
  */
 public class SubscribeZkClient {
+	private static Logger logger = Logger.getLogger(SubscribeZkClient.class);
 
 	// 需要多少个workserver
 	private static final int CLIENT_QTY = 5;
 
-	private static final String ZOOKEEPER_SERVER = "192.168.30.164:2181,192.168.30.165:2181,192.168.30.166:2181";
+	private static final String ZOOKEEPER_SERVER = "192.168.159.131:2181,192.168.159.131:2182,192.168.159.131:2183";// 公司
+	// private static final String ZOOKEEPER_SERVER =
+	// "192.168.159.131:2181,192.168.159.131:2182,192.168.159.131:2183";//V310
 	// 节点的路径
 	private static final String CONFIG_PATH = "/config";// 配置节点
 	private static final String COMMAND_PATH = "/command";// 命令节点
@@ -56,15 +60,15 @@ public class SubscribeZkClient {
 				WorkServer workServer = new WorkServer(CONFIG_PATH, SERVERS_PATH, serverData, client, initConfig);
 				workServers.add(workServer);
 				workServer.start();
-
 			}
-			System.out.println("敲回车键退出！\n");
+
+			logger.info("敲回车键退出！\n");
 			new BufferedReader(new InputStreamReader(System.in)).readLine();
 
 		} finally {
 			// 将workserver和client给关闭
 
-			System.out.println("Shutting down...");
+			logger.info("Shutting down...");
 
 			for (WorkServer workServer : workServers) {
 				try {

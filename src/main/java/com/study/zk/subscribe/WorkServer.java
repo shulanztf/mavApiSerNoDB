@@ -3,6 +3,7 @@ package com.study.zk.subscribe;
 import org.I0Itec.zkclient.IZkDataListener;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkNoNodeException;
+import org.apache.log4j.Logger;
 
 import com.alibaba.fastjson.JSON;
 
@@ -16,6 +17,7 @@ import com.alibaba.fastjson.JSON;
  * @Version:1.0
  */
 public class WorkServer {
+	private static Logger logger = Logger.getLogger(WorkServer.class);
 	private String serversPath;
 	private String configPath;
 	private ZkClient zkClient;
@@ -52,7 +54,7 @@ public class WorkServer {
 		this.dataListener = new IZkDataListener() {
 
 			public void handleDataDeleted(String arg0) throws Exception {
-
+				logger.info("配置删除监听获取信息:" + arg0);
 			}
 
 			/**
@@ -62,10 +64,16 @@ public class WorkServer {
 			 */
 			public void handleDataChange(String dataPath, Object data) throws Exception {
 				String retJson = new String((byte[]) data);
-				ServerConfig serverConfigLocal = (ServerConfig) JSON.parseObject(retJson, ServerConfig.class);
+				logger.info("配置变更监听获取信息:" + Thread.currentThread().getId() + "," + dataPath + "," + data.toString()
+						+ "," + retJson);
+				// ServerConfig serverConfigLocal = (ServerConfig)
+				// JSON.parseObject(retJson, ServerConfig.class);
+				ServerConfig scLocal = new ServerConfig();
+				scLocal.setDbUrl(retJson);
+				scLocal.setDbPwd("PWD" + retJson);
+				scLocal.setDbUser("USER" + retJson);
 				// 更新配置
-				updateConfig(serverConfigLocal);
-				System.out.println("new work server config is:" + serverConfigLocal.toString());
+				updateConfig(scLocal);
 			}
 		};
 
@@ -75,7 +83,7 @@ public class WorkServer {
 	 * 服务的启动
 	 */
 	public void start() {
-		System.out.println("work server start...");
+		logger.info("ZK服务启动...");
 		initRunning();
 	}
 
@@ -83,10 +91,9 @@ public class WorkServer {
 	 * 服务的停止
 	 */
 	public void stop() {
-		System.out.println("work server stop...");
+		logger.info("ZK服务停止，并取消监听...");
 		// 取消监听
 		zkClient.unsubscribeDataChanges(configPath, dataListener);
-
 	}
 
 	/**
@@ -95,6 +102,7 @@ public class WorkServer {
 	private void initRunning() {
 		registMeToZookeeper();
 		// 订阅config节点的改变
+		logger.info("ZK服务设置监听...");
 		zkClient.subscribeDataChanges(configPath, dataListener);
 	}
 
@@ -106,12 +114,16 @@ public class WorkServer {
 		// 构造临时节点
 		String mePath = serversPath.concat("/").concat(serverData.getAddress());
 		try {
-			// 存入是将json序列化
-			zkClient.createEphemeral(mePath, JSON.toJSONString(serverData).getBytes());
+			if (!zkClient.exists(mePath)) {
+				// 存入是将json序列化
+				zkClient.createEphemeral(mePath, JSON.toJSONString(serverData).getBytes());
+				logger.info("创建节点，并配置信息:" + mePath + "," + JSON.toJSONString(serverData));
+			}
 		} catch (ZkNoNodeException e) {
 			// 父节点不存在
 			zkClient.createPersistent(serversPath, true);
 			registMeToZookeeper();
+			logger.error(e);
 		}
 
 	}
@@ -120,6 +132,8 @@ public class WorkServer {
 	 * 当监听到zookeeper中config节点的配置信息改变时，要读取配置信息来更新自己的配置信息
 	 */
 	private void updateConfig(ServerConfig serverConfig) {
+		logger.info("更新前的配置信息:" + Thread.currentThread().getId() + "," + JSON.toJSONString(config));
 		this.config = serverConfig;
+		logger.info("更新后的配置信息:" + Thread.currentThread().getId() + "," + JSON.toJSONString(config));
 	}
 }
