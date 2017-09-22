@@ -27,11 +27,10 @@ import com.alibaba.fastjson.JSON;
 /**
  * 
  * @ClassName: DistributedLock
- * @Description:基于zookeeper简单实现分布式锁
+ * @Description:zookeeper简单实现分布式锁,已调通,可单例/多线程 运行
  * @see http://blog.csdn.net/peace1213/article/details/52571445
  * @see https://www.2cto.com/kf/201603/493045.html
  * @author: zhaotf
- * @param <privte>
  * @date: 2017年9月17日 下午4:20:02
  */
 public class DistributedLock implements Lock, Watcher {
@@ -44,15 +43,19 @@ public class DistributedLock implements Lock, Watcher {
 		final DistributedLock lock = new DistributedLock(host, "lock");
 
 		try {
-			ExecutorService es = Executors.newFixedThreadPool(10);// 线程池
-			for (int i = 0; i < 10; i++) {
-				es.execute(new Runnable() {
-					@Override
-					public void run() {
-						lock.lock();// 获取锁
-					}
-				});
+			ExecutorService es = Executors.newFixedThreadPool(50);// 线程池
+			for (int j = 0; j < 10; j++) {
+				for (int i = 0; i < 5; i++) {
+					es.execute(new Runnable() {
+						@Override
+						public void run() {
+							lock.lock();// 获取锁
+						}
+					});
+				}
+				TimeUnit.SECONDS.sleep(1);
 			}
+
 			es.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -254,7 +257,7 @@ public class DistributedLock implements Lock, Watcher {
 			}
 			return waitForLock(waitNode.get(), time);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e);
 		}
 		return false;
 	}
