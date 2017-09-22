@@ -1,7 +1,11 @@
 package com.test;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import com.annotation.Reflect;
 import com.annotation.processor.ReflectProcessor;
+import com.study.zk.lock.DistributedLock;
 
 /**
  * @ClassName: ReflectTest
@@ -11,19 +15,18 @@ import com.annotation.processor.ReflectProcessor;
  */
 public class ReflectTest {
 
-	@Reflect
-	public static void sayHello(final String name) {
-		System.out.println("==>> Hi, " + name + " [sayHello]");
-	}
-
-	@Reflect(name = "abcccc")
-	public static void sayHelloToSomeone(final String name) {
-		System.out.println("==>> Hi, " + name + " [sayHelloToSomeone]");
-	}
-
-	public static void main(final String[] args) throws Exception {
-		final ReflectProcessor relectProcessor = new ReflectProcessor();
-		relectProcessor.parseMethod(ReflectTest.class);
+	public static void main(String[] args) throws Exception {
+		ExecutorService es = Executors.newFixedThreadPool(10);// 线程池
+		final Integer ige = 0;
+		for (int i = 0; i < 3; i++) {
+			es.execute(new Runnable() {
+				@Override
+				public void run() {
+					System.out.println("aaaaaaaaaaa:" + ige);
+				}
+			});
+		}
+		es.shutdown();
 	}
 
 }
