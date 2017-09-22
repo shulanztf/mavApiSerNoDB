@@ -34,7 +34,7 @@ import com.alibaba.fastjson.JSON;
  * @param <privte>
  * @date: 2017年9月17日 下午4:20:02
  */
-public class DistributedLock<privte> implements Lock, Watcher {
+public class DistributedLock implements Lock, Watcher {
 	private static Logger logger = Logger.getLogger(DistributedLock.class);
 
 	public static void main(String[] args) throws Exception {
@@ -55,30 +55,30 @@ public class DistributedLock<privte> implements Lock, Watcher {
 					} finally {
 						// 共享资源
 						if (lock != null) {
-							lock.unlock();// 释放锁
-							lock.latch.countDown();
-							logger.info("线程关闭了ZK服务:" + Thread.currentThread().getId());
-
+							// lock.unlock();// 释放锁
+							// lock.latch.countDown();
 						}
 					}
 				}
 			});
 		}
 		// try {
-		// lock.zk.close(); // 关闭ZK服务，服务暂时不关闭
+		// lock.zk.close(); // 关闭ZK服务,服务暂时不关闭
 		// } catch (Exception e) {
 		// e.printStackTrace();
 		// }
 		es.shutdown();
+		logger.info("线程关闭了ZK服务:" + Thread.currentThread().getId());
 		logger.info("线程池关闭:" + Thread.currentThread().getId());
 	}
 
 	private ZooKeeper zk;
 	private String root = "/order";// 根
 	private String lockName;// 竞争资源的标志
-	// private volatile String waitNode;// 等待前一个锁
+	private ThreadLocal<String> waitNode = new ThreadLocal<String>();// 等待前一个锁
+	private ThreadLocal<Integer> waitNodeIndex = new ThreadLocal<Integer>();// 等待前一个锁
 	private ThreadLocal<String> myZnode = new ThreadLocal<String>();// 当前锁
-	private CountDownLatch latch = new CountDownLatch(1);;// 计数器
+	private CountDownLatch latch = new CountDownLatch(1);// 计数器
 	private CountDownLatch connectedSignal = new CountDownLatch(1);
 	private int sessionTimeout = 30000;
 	private ThreadLocal<List<String>> lockObjNodes = new ThreadLocal<List<String>>();
@@ -88,14 +88,14 @@ public class DistributedLock<privte> implements Lock, Watcher {
 	 * 创建分布式锁,使用前请确认config配置的zookeeper服务可用
 	 * 
 	 * @param config
-	 *            192.168.1.127:2181 连接到ZK服务，多个可以用逗号分割写
+	 *            192.168.1.127:2181 连接到ZK服务,多个可以用逗号分割写
 	 * @param lockName
 	 *            竞争资源标志,lockName中不能包含单词_lock_
 	 */
 	public DistributedLock(String config, String lockName) {
 		this.lockName = lockName;
 		try {
-			// 连接到ZK服务，多个可以用逗号分割写
+			// 连接到ZK服务,多个可以用逗号分割写
 			zk = new ZooKeeper(config, sessionTimeout, this);
 			// connectedSignal.await();
 			Stat stat = zk.exists(root, false);// 此去不执行 Watcher
@@ -113,8 +113,6 @@ public class DistributedLock<privte> implements Lock, Watcher {
 	 */
 	@Override
 	public void process(WatchedEvent event) {
-		logger.info("ZK监听事件:" + JSON.toJSONString(event));
-
 		if (KeeperState.SyncConnected == event.getState()) {
 			if (EventType.None == event.getType() && null == event.getPath()) {
 				// 连接时的监听事件
@@ -122,7 +120,6 @@ public class DistributedLock<privte> implements Lock, Watcher {
 				logger.info("ZK服务可用:" + this.myZnode.get() + "," + Thread.currentThread().getId());
 			} else if (EventType.NodeCreated == event.getType()) {
 				// 创建节点事件
-				logger.info("success create znode");
 				logger.info("创建节点成功:" + this.myZnode.get() + "," + Thread.currentThread().getId());
 			} else if (EventType.NodeDataChanged == event.getType()) {
 				// 更新节点事件
@@ -130,43 +127,43 @@ public class DistributedLock<privte> implements Lock, Watcher {
 				logger.info("更新节点成功:" + this.myZnode.get() + "," + Thread.currentThread().getId());
 			} else if (EventType.NodeDeleted == event.getType()) {
 				// 删除节点事件
-				// 前一节点删除时触发监听，获取锁
-				logger.info("删除节点成功:" + this.myZnode.get() + "," + Thread.currentThread().getId() + ","
+				// 前一节点删除时触发监听,获取锁
+				logger.info("删除节点成功,监听处理:" + this.myZnode.get() + "," + Thread.currentThread().getId() + ","
 						+ JSON.toJSONString(event));
+				try {
+					TimeUnit.SECONDS.sleep(1);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				this.latch.countDown();
 			} else if (EventType.NodeChildrenChanged == event.getType()) {
 				// 子节点更新事件
-				logger.info("NodeChildrenChanged");
 				logger.info("更新子节点成功:" + this.myZnode.get() + "," + Thread.currentThread().getId());
+			} else {
+				logger.info("监听事件未找到对应项目:" + Thread.currentThread().getId() + "," + JSON.toJSONString(event));
 			}
+		} else {
+			logger.info("监听事件未找到对应项目AA:" + Thread.currentThread().getId() + "," + JSON.toJSONString(event));
 		}
 	}
 
 	@Override
 	public void lock() {
 		try {
-			if (this.tryLock()) {
-				logger.info("获取锁，线程:" + Thread.currentThread().getId() + "," + myZnode.get() + " 获取锁 true");
-				return;
-			} else {
-				// TODO 阻塞问题点
 
-				// 未获取锁时，找到前一节点，并对其注册监听
-				logger.info("线程未获取锁:" + Thread.currentThread().getId() + "," + myZnode.get());
-				String subMyZnode = myZnode.get().substring(myZnode.get().lastIndexOf("/") + 1); // 如果不是最小的节点，找到比自己小1的节点
-				String localWaitNode = lockObjNodes.get()
-						.get(Collections.binarySearch(lockObjNodes.get(), subMyZnode) - 1);// 找到前一个子节点
-				// 对前一节点注册监听
-				if (zk.exists(root + "/" + localWaitNode, true) != null) {
-					logger.info(
-							"开始等待，并注册监听:" + Thread.currentThread().getId() + "," + myZnode.get() + "," + localWaitNode);
-					waitForLock(localWaitNode, sessionTimeout);// 等待锁，前一节点删除时，会通知自己去获取锁
-				}
-				// 前一节点不存在时，或前一节点删除时，重新获取锁
-				logger.info("再次获取锁:" + myZnode.get() + "," + Thread.currentThread().getId() + ",前一节点:" + localWaitNode);
-				// this.lock();
-				return;
+			if (this.tryLock()) {
+				logger.info("获取锁,线程:" + Thread.currentThread().getId() + "," + myZnode.get() + " 获取锁,在此释放锁");
+				this.unlock();
+				// return;
+			} else {
+				// 未获取锁时,找到前一节点,并对其注册监听
+				logger.info("线程未获取锁:" + Thread.currentThread().getId() + "," + myZnode.get() + "," + this.waitNode);
+				waitForLock(waitNode.get(), sessionTimeout);// 等待锁,前一节点删除时,会通知自己去获取锁
+				this.lock();
+				// return;
 			}
+
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -178,7 +175,7 @@ public class DistributedLock<privte> implements Lock, Watcher {
 	@Override
 	public boolean tryLock() {
 		try {
-			String splitStr = "_lock_";
+			String splitStr = "_";
 			if (lockName.contains(splitStr)) {
 				throw new RuntimeException("lockName 不兼容 \\u000B");
 			}
@@ -195,26 +192,37 @@ public class DistributedLock<privte> implements Lock, Watcher {
 				// 取出所有lockName的锁
 				lockObjNodes.set(new ArrayList<String>());
 				for (String node : subNodes.get()) {
-					String _node = node.split(splitStr)[0];
-					if (!_node.equals(lockName)) {
+					if (!StringUtils.startsWith(node, lockName)) {
 						continue;
 					}
-					lockObjNodes.get().add(node);
+					lockObjNodes.get().add(root + "/" + node);
 				}
-				logger.info("等待节点列表加载AAA:" + myZnode.get() + "," + lockObjNodes.get() + ","
-						+ Thread.currentThread().getId());
-				// lockObjNodes.set(nodes);
+				// 所有节点先,注册监听, 如果不是最小的节点,找到比自己小1的节点
+				waitNodeIndex.set(new Integer(lockObjNodes.get().indexOf(myZnode.get()) - 1));
+				if (waitNodeIndex.get().intValue() > 0) {
+					waitNode.set(lockObjNodes.get().get(waitNodeIndex.get()));// 设置等待节点信息
+				} else {
+					// 如果是最小的节点,则表示取得锁
+					logger.info("线程获取了锁:" + myZnode.get() + "==" + lockObjNodes.get().get(0) + ","
+							+ Thread.currentThread().getId());
+					return true;
+				}
 			}
 
-			logger.info("比较:" + myZnode.get() + "," + lockObjNodes.get().get(0) + "," + Thread.currentThread().getId()
-					+ "," + JSON.toJSONString(lockObjNodes.get()));
-			if (myZnode.get().equals(root + "/" + lockObjNodes.get().get(0))) {
-				// 如果是最小的节点,则表示取得锁
-				logger.info("线程获取了锁:" + myZnode.get() + "==" + lockObjNodes.get().get(0) + ","
-						+ Thread.currentThread().getId());
+			// 注册/再次注册监听,前面节点释放锁后,后续节点处理
+			if (null == zk.exists(lockObjNodes.get().get(waitNodeIndex.get()), true)) {
+				logger.info("线程注册监听不成功,获取锁:" + Thread.currentThread().getId() + ","
+						+ lockObjNodes.get().get(waitNodeIndex.get()) + "," + waitNode.get() + ",监听结果:空");
 				return true;
 			}
+
+			logger.info("线程注册监听成功,并等待:" + Thread.currentThread().getId() + ","
+					+ lockObjNodes.get().get(waitNodeIndex.get()) + "," + waitNode.get() + ",监听结果:空");
+			this.latch = new CountDownLatch(1);
+			this.latch.await();
+
 		} catch (Exception e) {
+			logger.error(e);
 			throw new RuntimeException(e);
 		}
 		return false;
@@ -229,24 +237,24 @@ public class DistributedLock<privte> implements Lock, Watcher {
 	 * @return boolean
 	 */
 	private boolean waitForLock(String lower, long waitTime) throws InterruptedException, KeeperException {
-		logger.info("线程:" + Thread.currentThread().getId() + " 开始等待锁 " + root + "/" + lower);
-		this.latch.await(waitTime, TimeUnit.MILLISECONDS);// 等待，这里应该一直等待其他线程释放锁
+		logger.info("线程开始等待锁:" + Thread.currentThread().getId() + "," + myZnode.get() + ","
+				+ lockObjNodes.get().get(waitNodeIndex.get()) + ",并注册监听结果:"
+				+ zk.exists(lockObjNodes.get().get(waitNodeIndex.get()), true));
 
-		// // TODO 检查自己前面是否还有节点未存在，有，就再次等待
-		// for (String node : lockObjNodes.get()) {
-		// if (StringUtils.endsWith(myZnode.get(), node)) {
-		// // 到了自己，就跳出
-		// continue;
-		// }
-		// Stat sat = zk.exists(root + "/" + node, false);//
-		// if (sat == null) {
-		// lockObjNodes.get().remove(node);
-		// logger.info("删除不存在的等待节点:" + Thread.currentThread().getId() + "," +
-		// myZnode.get() + "," + node + ","
-		// + JSON.toJSONString(lockObjNodes.get()));
-		// }
-		// }
-
+		this.latch.await();// 等待,这里应该一直等待其他线程释放锁
+		logger.info("线程被唤醒:" + Thread.currentThread().getId() + "," + myZnode.get() + "," + waitNode.get() + ",超时设置:"
+				+ waitTime);
+		// 被唤醒后,检查前节点是否存在,存在就继续等待,并,再次注册监听
+		if (zk.exists(root + "/" + waitNode, true) != null) {
+			logger.info("开始等待,并注册监听:" + Thread.currentThread().getId() + "," + myZnode.get() + "," + root + "/"
+					+ waitNode.get() + ",超时设置:" + waitTime);
+			this.latch = new CountDownLatch(1);
+			this.latch.await();// 等待,这里应该一直等待其他线程释放锁
+		} else {
+			// 前一节点不存在时,
+			logger.info("前一节点已消失:" + Thread.currentThread().getId() + "," + myZnode.get() + "," + root + "/"
+					+ waitNode.get() + ",超时设置:" + waitTime);
+		}
 		return true;
 	}
 
@@ -256,8 +264,10 @@ public class DistributedLock<privte> implements Lock, Watcher {
 	@Override
 	public void unlock() {
 		try {
-			logger.info("释放锁，线程:" + Thread.currentThread().getId() + ",本节点删除:" + myZnode.get());
-			zk.delete(myZnode.get(), -1);// 删除自身节点，并触发后一节点的监听
+			logger.info("释放锁,线程:" + Thread.currentThread().getId() + ",本节点删除:" + myZnode.get());
+			zk.delete(myZnode.get(), -1);// 删除自身节点,并触发后一节点的监听
+			logger.info(
+					"剩余节点:" + Thread.currentThread().getId() + "," + myZnode.get() + "," + zk.getChildren(root, false));
 			// myZnode.remove();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -270,7 +280,7 @@ public class DistributedLock<privte> implements Lock, Watcher {
 			if (this.tryLock()) {
 				return true;
 			}
-			// 如果不是最小的节点，找到比自己小1的节点
+			// 如果不是最小的节点,找到比自己小1的节点
 			String tmpNode = myZnode.get();
 			String subMyZnode = tmpNode.substring(tmpNode.lastIndexOf("/") + 1);
 			String localWaitNode = lockObjNodes.get().get(Collections.binarySearch(lockObjNodes.get(), subMyZnode) - 1);// 找到前一个子节点
