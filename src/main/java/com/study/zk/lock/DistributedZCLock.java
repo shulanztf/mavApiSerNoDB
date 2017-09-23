@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.I0Itec.zkclient.IZkChildListener;
@@ -30,17 +32,34 @@ public class DistributedZCLock {
 	private static Logger logger = Logger.getLogger(DistributedZCLock.class);
 
 	public static void main(String[] args) {
+		ExecutorService ec = Executors.newFixedThreadPool(50);
 		try {
-			DistributedZCLock zcLock = new DistributedZCLock();
-			if (zcLock.getLock()) {
-				zcLock.unlock();
+			final DistributedZCLock zcLock = new DistributedZCLock();
+			for (int j = 0; j < 10; j++) {
+				for (int i = 0; i < 5; i++) {
+					ec.execute(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								if (zcLock.getLock()) {
+									zcLock.unlock();
+								}
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							} catch (KeeperException e) {
+								e.printStackTrace();
+							}
+						}
+					});
+				}
+				TimeUnit.SECONDS.sleep(1);
 			}
 
-			TimeUnit.SECONDS.sleep(3);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("异常A:" + e);
 		} finally {
+			ec.shutdown();
 			logger.info("最终处理:" + Thread.currentThread().getId());
 		}
 
@@ -71,7 +90,7 @@ public class DistributedZCLock {
 
 	public DistributedZCLock() throws InterruptedException, KeeperException {
 		zc = new ZkClient(host, 5000, 5000, new BytesPushThroughSerializer());
-		this.subscribe();// 注册监听
+		this.subscribe(DistributedZCLock.this);// 注册监听
 		// try {
 		// connectedSignal.await();
 		// } catch (InterruptedException e) {
@@ -87,7 +106,6 @@ public class DistributedZCLock {
 	 * @throws
 	 */
 	public boolean lock() {
-		logger.info("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 		myZnode.set(zc.createEphemeralSequential(root + "/" + lockName,
 				("节点数据,threadId:" + Thread.currentThread().getId()).getBytes()));// 创建锁节点,并保存到线程缓存中
 		subNodes.set(zc.getChildren(root));// 获取所有子节点
@@ -99,11 +117,11 @@ public class DistributedZCLock {
 			if (!StringUtils.startsWith(node, lockName)) {
 				continue;
 			}
-			lockNodes.get().add(node);
+			lockNodes.get().add(root + "/" + node);
 		}
 		logger.info("设置所有节点集合:" + Thread.currentThread().getId() + ","
 				+ myZnode.get() + "," + lockNodes.get());
-		if (StringUtils.endsWith(myZnode.get(), lockNodes.get().get(0))) {
+		if (StringUtils.equals(myZnode.get(), lockNodes.get().get(0))) {
 			// 首节点获取锁
 			logger.info("线程获取了锁:" + Thread.currentThread().getId() + ""
 					+ this.myZnode.get());
@@ -113,6 +131,7 @@ public class DistributedZCLock {
 		waitNodeIndex.set(new Integer(
 				lockNodes.get().indexOf(myZnode.get()) - 1));
 		waitNode.set(lockNodes.get().get(waitNodeIndex.get()));// 设置等待节点信息
+		this.subscribe(this, lockNodes.get().get(waitNodeIndex.get()));// 设置监听
 		logger.info("线程未获取锁:" + Thread.currentThread().getId() + ","
 				+ myZnode.get() + "," + waitNodeIndex.get() + ","
 				+ waitNode.get() + "," + lockNodes.get());
@@ -153,7 +172,9 @@ public class DistributedZCLock {
 	 */
 	public boolean getLock() throws InterruptedException, KeeperException {
 		if (StringUtils.isBlank(myZnode.get())) {
-			return this.lock();
+			if (this.lock()) {
+				return true;
+			}
 		}
 		if (!waitForLock("", 3)) {
 			return this.getLock();
@@ -192,11 +213,18 @@ public class DistributedZCLock {
 	 * 
 	 * @throws
 	 */
-	public void subscribe() {
-		this.setListener();
+	public void subscribe(DistributedZCLock lock) {
+		this.setListener(lock);
 		zc.subscribeChildChanges(root, childListener);// 监听子节点
 		zc.subscribeDataChanges(root, dataListener);// 监听数据
 		zc.subscribeStateChanges(stateListener);// 监听节点
+	}
+
+	public void subscribe(DistributedZCLock lock, String path) {
+		this.setListener(lock);
+		zc.subscribeChildChanges(path, childListener);// 监听子节点
+		zc.subscribeDataChanges(path, dataListener);// 监听数据
+		// zc.subscribeStateChanges(stateListener);// 监听节点
 	}
 
 	/**
@@ -206,7 +234,7 @@ public class DistributedZCLock {
 	 * 
 	 * @throws
 	 */
-	public void setListener() {
+	public void setListener(final DistributedZCLock lock) {
 
 		childListener = new IZkChildListener() {
 
@@ -223,14 +251,18 @@ public class DistributedZCLock {
 			@Override
 			public void handleDataChange(String arg0, Object arg1)
 					throws Exception {
-				logger.info("监听数据变化:" + Thread.currentThread().getId() + ","
+				logger.info("监听节点/数据变化:" + Thread.currentThread().getId() + ","
 						+ arg0 + "," + new String((byte[]) arg1));
+				// TODO
+				lock.latch.countDown();
 			}
 
 			@Override
 			public void handleDataDeleted(String arg0) throws Exception {
-				logger.info("监听数据删除:" + Thread.currentThread().getId() + ","
+				logger.info("监听节点/数据删除:" + Thread.currentThread().getId() + ","
 						+ arg0);
+				// TODO
+				lock.latch.countDown();
 			}
 		};
 		stateListener = new IZkStateListener() {
