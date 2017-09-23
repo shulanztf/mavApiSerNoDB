@@ -44,7 +44,7 @@ public class DistributedLock implements Lock, Watcher {
 		final DistributedLock lock = new DistributedLock(host, "lock");
 
 		try {
-			ExecutorService es = Executors.newFixedThreadPool(50);// 线程池
+			ExecutorService es = Executors.newFixedThreadPool(30);// 线程池
 			for (int j = 0; j < 10; j++) {
 				for (int i = 0; i < 5; i++) {
 					es.execute(new Runnable() {
@@ -264,6 +264,10 @@ public class DistributedLock implements Lock, Watcher {
 					+ myZnode.get() + "," + zk.getChildren(root, false));
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally{
+			this.myZnode.remove();
+			this.lockObjNodes.remove();
+			this.subNodes.remove();
 		}
 	}
 

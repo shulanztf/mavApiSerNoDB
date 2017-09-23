@@ -3,9 +3,11 @@ package com.study.zk.lock;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.I0Itec.zkclient.IZkChildListener;
@@ -34,15 +36,16 @@ public class DistributedZCLock {
 	private static Logger logger = Logger.getLogger(DistributedZCLock.class);
 
 	public static void main(String[] args) {
-		 ExecutorService ec = Executors.newFixedThreadPool(20);
+		 ExecutorService ec = Executors.newFixedThreadPool(30);
 //		ExecutorService ec = Executors.newCachedThreadPool();
 		try {
 			final DistributedZCLock zcLock = new DistributedZCLock();
-			for (int j = 0; j < 10; j++) {
-				for (int i = 0; i < 5; i++) {
-					ec.execute(new Runnable() {
+			for (int j = 0; j < 5; j++) {
+				for (int i = 0; i < 10; i++) {
+					 Future<String> fu = ec.submit(new Callable<String>() {
+
 						@Override
-						public void run() {
+						public String call() throws Exception {
 							try {
 								if (zcLock.getLock()) {
 									zcLock.unlock();
@@ -52,8 +55,37 @@ public class DistributedZCLock {
 							} catch (KeeperException e) {
 								e.printStackTrace();
 							}
-						}
-					});
+							return "abc";
+						}});
+//					Future<?> fu = ec.submit(new Runnable() {
+//
+//						@Override
+//						public void run() {
+//							try {
+//								if (zcLock.getLock()) {
+//									zcLock.unlock();
+//								}
+//							} catch (InterruptedException e) {
+//								e.printStackTrace();
+//							} catch (KeeperException e) {
+//								e.printStackTrace();
+//							}
+//						}});
+					logger.info("异步执行结果:"+fu.get()+","+JSON.toJSONString(fu));
+//					ec.execute(new Runnable() {
+//						@Override
+//						public void run() {
+//							try {
+//								if (zcLock.getLock()) {
+//									zcLock.unlock();
+//								}
+//							} catch (InterruptedException e) {
+//								e.printStackTrace();
+//							} catch (KeeperException e) {
+//								e.printStackTrace();
+//							}
+//						}
+//					});
 				}
 				TimeUnit.SECONDS.sleep(2);
 			}
