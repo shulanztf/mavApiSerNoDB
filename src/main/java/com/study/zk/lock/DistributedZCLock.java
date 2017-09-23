@@ -12,7 +12,9 @@ import org.I0Itec.zkclient.IZkChildListener;
 import org.I0Itec.zkclient.IZkDataListener;
 import org.I0Itec.zkclient.IZkStateListener;
 import org.I0Itec.zkclient.ZkClient;
+import org.I0Itec.zkclient.exception.ZkMarshallingError;
 import org.I0Itec.zkclient.serialize.BytesPushThroughSerializer;
+import org.I0Itec.zkclient.serialize.ZkSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
@@ -35,29 +37,31 @@ public class DistributedZCLock {
 		ExecutorService ec = Executors.newFixedThreadPool(50);
 		try {
 			final DistributedZCLock zcLock = new DistributedZCLock();
-			for (int j = 0; j < 10; j++) {
-				for (int i = 0; i < 5; i++) {
-					ec.execute(new Runnable() {
-						@Override
-						public void run() {
-							try {
-								if (zcLock.getLock()) {
-									zcLock.unlock();
-								}
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							} catch (KeeperException e) {
-								e.printStackTrace();
+			// for (int j = 0; j < 10; j++) {
+			for (int i = 0; i < 5; i++) {
+				ec.execute(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							if (zcLock.getLock()) {
+								zcLock.unlock();
 							}
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						} catch (KeeperException e) {
+							e.printStackTrace();
 						}
-					});
-				}
-				TimeUnit.SECONDS.sleep(1);
+					}
+				});
 			}
+			TimeUnit.SECONDS.sleep(2);
+			// }
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("异常A:" + e);
+			logger.error("异常关闭:" + JSON.toJSONString(ec.shutdownNow()));
+
 		} finally {
 			ec.shutdown();
 			logger.info("最终处理:" + Thread.currentThread().getId());
@@ -89,7 +93,20 @@ public class DistributedZCLock {
 	private IZkStateListener stateListener;
 
 	public DistributedZCLock() throws InterruptedException, KeeperException {
-		zc = new ZkClient(host, 5000, 5000, new BytesPushThroughSerializer());
+		// zc = new ZkClient(host, 5000, 5000, new
+		// BytesPushThroughSerializer());
+		zc = new ZkClient(host, 5000, 5000, new ZkSerializer() {
+
+			@Override
+			public byte[] serialize(Object data) throws ZkMarshallingError {
+				return (byte[]) data;
+			}
+
+			@Override
+			public Object deserialize(byte[] bytes) throws ZkMarshallingError {
+				return new String(bytes);
+			}
+		});
 		this.subscribe(DistributedZCLock.this);// 注册监听
 		// try {
 		// connectedSignal.await();
@@ -191,18 +208,22 @@ public class DistributedZCLock {
 	 */
 	public void unlock() {
 		try {
+			// TODO
+			int aa = 3 / 0;
+
 			logger.info("释放锁,线程:" + Thread.currentThread().getId() + ",本节点删除:"
 					+ myZnode.get());
 			logger.info("节点删除前操作:" + Thread.currentThread().getId() + ","
-					+ myZnode.get() + ","
-					+ new String((byte[]) zc.readData(myZnode.get())));
+					+ myZnode.get() + "," + zc.readData(myZnode.get()));
 			zc.writeData(myZnode.get(), ("本节点要删除:" + Thread.currentThread()
 					.getId()).getBytes());
 			zc.delete(myZnode.get());// 删除自身节点,并触发后一节点的监听
 			logger.info("剩余节点:" + Thread.currentThread().getId() + ","
 					+ myZnode.get() + "," + zc.getChildren(root));
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error("解决锁异常,并强制删除:" + Thread.currentThread().getId() + ","
+					+ myZnode.get(), e);
+			zc.delete(myZnode.get());// 删除自身节点,并触发后一节点的监听
 		}
 	}
 
@@ -253,15 +274,12 @@ public class DistributedZCLock {
 					throws Exception {
 				logger.info("监听节点/数据变化:" + Thread.currentThread().getId() + ","
 						+ arg0 + "," + new String((byte[]) arg1));
-				// TODO
-				lock.latch.countDown();
 			}
 
 			@Override
 			public void handleDataDeleted(String arg0) throws Exception {
 				logger.info("监听节点/数据删除:" + Thread.currentThread().getId() + ","
 						+ arg0);
-				// TODO
 				lock.latch.countDown();
 			}
 		};
@@ -300,6 +318,8 @@ public class DistributedZCLock {
 			public void handleSessionEstablishmentError(Throwable error)
 					throws Exception {
 				logger.error("监听节点异常:" + Thread.currentThread().getId(), error);
+				error.printStackTrace();
+				System.exit(1);
 			}
 		};
 	}
