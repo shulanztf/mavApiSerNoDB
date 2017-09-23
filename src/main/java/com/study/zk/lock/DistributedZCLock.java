@@ -208,9 +208,6 @@ public class DistributedZCLock {
 	 */
 	public void unlock() {
 		try {
-			// TODO
-			int aa = 3 / 0;
-
 			logger.info("释放锁,线程:" + Thread.currentThread().getId() + ",本节点删除:"
 					+ myZnode.get());
 			logger.info("节点删除前操作:" + Thread.currentThread().getId() + ","
