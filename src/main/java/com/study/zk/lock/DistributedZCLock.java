@@ -34,28 +34,29 @@ public class DistributedZCLock {
 	private static Logger logger = Logger.getLogger(DistributedZCLock.class);
 
 	public static void main(String[] args) {
-		ExecutorService ec = Executors.newFixedThreadPool(50);
+		 ExecutorService ec = Executors.newFixedThreadPool(20);
+//		ExecutorService ec = Executors.newCachedThreadPool();
 		try {
 			final DistributedZCLock zcLock = new DistributedZCLock();
-			// for (int j = 0; j < 10; j++) {
-			for (int i = 0; i < 5; i++) {
-				ec.execute(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							if (zcLock.getLock()) {
-								zcLock.unlock();
+			for (int j = 0; j < 10; j++) {
+				for (int i = 0; i < 5; i++) {
+					ec.execute(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								if (zcLock.getLock()) {
+									zcLock.unlock();
+								}
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							} catch (KeeperException e) {
+								e.printStackTrace();
 							}
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						} catch (KeeperException e) {
-							e.printStackTrace();
 						}
-					}
-				});
+					});
+				}
+				TimeUnit.SECONDS.sleep(2);
 			}
-			TimeUnit.SECONDS.sleep(2);
-			// }
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -221,6 +222,10 @@ public class DistributedZCLock {
 			logger.error("解决锁异常,并强制删除:" + Thread.currentThread().getId() + ","
 					+ myZnode.get(), e);
 			zc.delete(myZnode.get());// 删除自身节点,并触发后一节点的监听
+		}finally{
+			this.myZnode.remove();
+			this.lockNodes.remove();
+			this.subNodes.remove();
 		}
 	}
 
