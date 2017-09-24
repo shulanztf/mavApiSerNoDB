@@ -9,6 +9,8 @@ import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.serialize.BytesPushThroughSerializer;
 import org.apache.log4j.Logger;
 
+import com.alibaba.fastjson.JSON;
+
 /**
  * 
  * @Title: SubscribeZkClient
@@ -23,9 +25,9 @@ public class SubscribeZkClient {
 	// 需要多少个workserver
 	private static final int CLIENT_QTY = 5;
 
-	private static final String ZOOKEEPER_SERVER = "192.168.159.131:2181,192.168.159.131:2182,192.168.159.131:2183";// 公司
 	// private static final String ZOOKEEPER_SERVER =
-	// "192.168.159.131:2181,192.168.159.131:2182,192.168.159.131:2183";//V310
+	// "192.168.159.131:2181,192.168.159.131:2182,192.168.159.131:2183";// 公司
+	private static final String ZOOKEEPER_SERVER = "192.168.0.126:2181,192.168.0.126:2182,192.168.0.126:2183";// V310
 	// 节点的路径
 	private static final String CONFIG_PATH = "/config";// 配置节点
 	private static final String COMMAND_PATH = "/command";// 命令节点
@@ -44,26 +46,41 @@ public class SubscribeZkClient {
 			initConfig.setDbUrl("jdbc:mysql://localhost:3306/mydb");
 			initConfig.setDbUser("root");
 
-			ZkClient clientManage = new ZkClient(ZOOKEEPER_SERVER, 5000, 5000, new BytesPushThroughSerializer());
-			manageServer = new ManagerServer(SERVERS_PATH, COMMAND_PATH, CONFIG_PATH, clientManage, initConfig);
+			ZkClient clientManage = new ZkClient(ZOOKEEPER_SERVER, 5000, 5000,
+					new BytesPushThroughSerializer());
+			manageServer = new ManagerServer(SERVERS_PATH, COMMAND_PATH,
+					CONFIG_PATH, clientManage, initConfig);
 			manageServer.start();
 
 			// 根据定义的work服务个数，创建服务器后注册，然后启动
 			for (int i = 0; i < CLIENT_QTY; ++i) {
-				ZkClient client = new ZkClient(ZOOKEEPER_SERVER, 5000, 5000, new BytesPushThroughSerializer());
+				initConfig = new ServerConfig();
+				initConfig.setDbPwd("123456");
+				initConfig.setDbUrl("jdbc:mysql://localhost:3306/mydb");
+				initConfig.setDbUser("root");
+				
+				
+				ZkClient client = new ZkClient(ZOOKEEPER_SERVER, 5000, 5000,
+						new BytesPushThroughSerializer());
 				clients.add(client);
 				ServerData serverData = new ServerData();
 				serverData.setId(i);
 				serverData.setName("WorkServer#" + i);
 				serverData.setAddress("192.168.1." + i);
 
-				WorkServer workServer = new WorkServer(CONFIG_PATH, SERVERS_PATH, serverData, client, initConfig);
+				WorkServer workServer = new WorkServer(CONFIG_PATH,
+						SERVERS_PATH, serverData, client, initConfig);
 				workServers.add(workServer);
 				workServer.start();
 			}
 
-			logger.info("敲回车键退出！\n");
-			new BufferedReader(new InputStreamReader(System.in)).readLine();
+			logger.info("敲quit 回车键退出！\n");
+			String line = null;
+			while (!"quit".equals(line = new BufferedReader(new InputStreamReader(
+					System.in)).readLine())) {
+				logger.info("键盘输入aaaa:" + line);
+
+			}
 
 		} finally {
 			// 将workserver和client给关闭
@@ -72,16 +89,20 @@ public class SubscribeZkClient {
 
 			for (WorkServer workServer : workServers) {
 				try {
+					logger.info("工作实例停止服务:" + Thread.currentThread().getId()
+							+ "," + JSON.toJSONString(workServer));
 					workServer.stop();
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error("工作实例停止服务异常", e);
 				}
 			}
 			for (ZkClient client : clients) {
 				try {
+					logger.info("客户端停止:" + Thread.currentThread().getId() + ","
+							+ JSON.toJSONString(client));
 					client.close();
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error("客户端停止服务异常", e);
 				}
 
 			}

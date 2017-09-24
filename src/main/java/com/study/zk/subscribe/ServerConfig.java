@@ -14,6 +14,9 @@ public class ServerConfig {
 	private String dbPwd;
 	private String dbUser;
 
+	public ServerConfig() {
+	}
+	
 	public String getDbUrl() {
 		return dbUrl;
 	}

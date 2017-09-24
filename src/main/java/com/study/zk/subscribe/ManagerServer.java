@@ -37,15 +37,18 @@ public class ManagerServer {
 	/**
 	 * 
 	 * @param serversPath
+	 *            服务列表节点
 	 * @param commandPath
 	 *            Zookeeper中存放命令的节点路径
 	 * @param configPath
+	 *            配置节点
 	 * @param zkClient
+	 *            ZK组件
 	 * @param config
 	 *            配置信息
 	 */
-	public ManagerServer(String serversPath, String commandPath, String configPath, ZkClient zkClient,
-			ServerConfig config) {
+	public ManagerServer(String serversPath, String commandPath,
+			String configPath, ZkClient zkClient, ServerConfig config) {
 		this.serversPath = serversPath;
 		this.commandPath = commandPath;
 		this.zkClient = zkClient;
@@ -53,12 +56,15 @@ public class ManagerServer {
 		this.configPath = configPath;
 		this.childListener = new IZkChildListener() {
 			// 用于监听zookeeper中servers节点的子节点列表变化
-			public void handleChildChange(String parentPath, List<String> currentChilds) throws Exception {
-				// 更新服务器列表
-				workServerList = currentChilds;
+			@Override
+			public void handleChildChange(String parentPath,
+					List<String> currentChilds) throws Exception {
 
-				logger.info("work server变更监听:" + Thread.currentThread().getId() + "," + parentPath + ","
-						+ JSON.toJSONString(workServerList));
+				logger.info("work server子节点变更监听:"
+						+ Thread.currentThread().getId() + "," + parentPath
+						+ ",原有:" + JSON.toJSONString(workServerList) + ",最新:"
+						+ JSON.toJSONString(currentChilds));
+				workServerList = currentChilds; // 更新服务器列表
 				execList();
 			}
 
@@ -66,18 +72,22 @@ public class ManagerServer {
 
 		// 用于监听zookeeper中command节点的数据变化
 		this.dataListener = new IZkDataListener() {
-
+			@Override
 			public void handleDataDeleted(String dataPath) throws Exception {
-
+				logger.info("work server节点/数据删除监听:"
+						+ Thread.currentThread().getId() + "," + dataPath);
 			}
 
-			public void handleDataChange(String dataPath, Object data) throws Exception {
-
+			@Override
+			public void handleDataChange(String dataPath, Object data)
+					throws Exception {
 				String cmd = new String((byte[]) data);
-				logger.info("cmd:" + cmd);
-				exeCmd(cmd);
-
+				logger.info("work server节点/数据变更监听:"
+						+ Thread.currentThread().getId() + "," + dataPath + ","
+						+ cmd);
+				exeCmd(cmd);// 执行控制命令的函数
 			}
+
 		};
 
 	}
@@ -90,6 +100,8 @@ public class ManagerServer {
 		// 取消订阅command节点数据变化和servers节点的列表变化
 		zkClient.unsubscribeChildChanges(serversPath, childListener);
 		zkClient.unsubscribeDataChanges(commandPath, dataListener);
+		logger.info("撤销监听" + Thread.currentThread().getId() + ",服务节点:"
+				+ serversPath + ",命令节点:" + commandPath);
 	}
 
 	/**
@@ -112,7 +124,8 @@ public class ManagerServer {
 		} else if ("modify".equals(cmdType)) {
 			execModify();
 		} else {
-			logger.error("命令错误:" + Thread.currentThread().getId() + "," + cmdType);
+			logger.error("命令错误:" + Thread.currentThread().getId() + ","
+					+ cmdType);
 		}
 	}
 
@@ -128,22 +141,24 @@ public class ManagerServer {
 	private void execCreate() {
 		if (!zkClient.exists(configPath)) {
 			try {
-				zkClient.createPersistent(configPath, JSON.toJSONString(config).getBytes());
-				logger.info(
-						"创建节点:" + Thread.currentThread().getId() + "," + configPath + "," + JSON.toJSONString(config));
+				zkClient.createPersistent(configPath, JSON.toJSONString(config)
+						.getBytes());
+				logger.info("创建节点:" + Thread.currentThread().getId() + ","
+						+ configPath + "," + JSON.toJSONString(config));
 			} catch (ZkNodeExistsException e) {
-				logger.error(e);
 				// 节点已经存在异常，直接写入数据
-				zkClient.writeData(configPath, JSON.toJSONString(config).getBytes());
-				logger.info("写入节点信息:" + Thread.currentThread().getId() + "," + configPath + ","
-						+ JSON.toJSONString(config));
+				zkClient.writeData(configPath, JSON.toJSONString(config)
+						.getBytes());
+				logger.error("创建节点异常,重试写入数据:" + Thread.currentThread().getId()
+						+ "," + configPath + "," + JSON.toJSONString(config), e);
 			} catch (ZkNoNodeException e) {
-				logger.error(e);
 				// 表示其中的一个节点的父节点还没有被创建
-				String parentDir = configPath.substring(0, configPath.lastIndexOf('/'));
+				String parentDir = configPath.substring(0,
+						configPath.lastIndexOf('/'));
 				zkClient.createPersistent(parentDir, true);
-				logger.info("创建节点:" + Thread.currentThread().getId() + "," + parentDir);
 				execCreate();
+				logger.error("创建节点异常，重试创建父节点:" + Thread.currentThread().getId()
+						+ "," + configPath + "," + parentDir, e);
 			}
 		}
 	}
@@ -154,14 +169,19 @@ public class ManagerServer {
 	 * void
 	 */
 	private void execModify() {
-		config.setDbUser(config.getDbUser() + "_modify");
+		config.setDbUser(config.getDbUser() + "_modify" + ","
+				+ Thread.currentThread().getId() + ":"
+				+ System.currentTimeMillis());
+		config.setDbPwd(config.getDbPwd() + ","
+				+ Thread.currentThread().getId() + ":"
+				+ System.currentTimeMillis());
 		try {
 			// 回写到zookeeper中
+			logger.info("写入节点信息:" + Thread.currentThread().getId() + ","
+					+ configPath + "," + JSON.toJSONString(config));
 			zkClient.writeData(configPath, JSON.toJSONString(config).getBytes());
-			logger.info(
-					"写入节点信息:" + Thread.currentThread().getId() + "," + configPath + "," + JSON.toJSONString(config));
 		} catch (ZkNoNodeException e) {
-			logger.error(e);
+			logger.error("节点数据变更异常:" + Thread.currentThread().getId(), e);
 			execCreate();
 		}
 	}
