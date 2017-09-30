@@ -11,6 +11,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.hhcf.annotation.HmForm;
+import com.hhcf.annotation.ZxbForm;
 import com.hhcf.backend.model.HmUserEntity;
 
 /**
@@ -28,6 +29,11 @@ public class HmUserArgumentResolver implements HandlerMethodArgumentResolver {
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
 		if (parameter.hasParameterAnnotation(HmForm.class)) {
+			// logger.info("eeeee:" +
+			// parameter.getMethodAnnotation(HmForm.class).toString());
+			logger.info("eeeee:" + parameter.getParameterAnnotation(HmForm.class).toString());
+			logger.info("eeeee:" + parameter.getParameterAnnotation(HmForm.class).value());
+			logger.info("eeeee:" + parameter.getParameterAnnotation(HmForm.class).name());
 			return true;
 		}
 		return false;
@@ -36,13 +42,7 @@ public class HmUserArgumentResolver implements HandlerMethodArgumentResolver {
 	@Override
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-		String objName = parameter.getParameterName() + ".";
-		if (!HmUserEntity.class.equals(parameter.getParameterType())) {
-			logger.info("ccc:" + parameter.getMethodAnnotation(HmForm.class));
-			logger.warn("springMVC自定义参数解析器,参数错误:" + parameter.getParameterType());
-		}
-
-		// Object obj = BeanUtils.instantiate(parameter.getParameterType());
+		String objName = parameter.getParameterAnnotation(HmForm.class).value() + ".";// 获取注解里的逻辑名
 		Object obj = parameter.getParameterType().newInstance();// 实例化对象
 
 		StringBuffer tmp = new StringBuffer();

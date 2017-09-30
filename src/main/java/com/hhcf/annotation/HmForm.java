@@ -20,4 +20,6 @@ import java.lang.annotation.Target;
 @Documented
 public @interface HmForm {
 	String value() default "";
+
+	String name() default "";
 }
