@@ -47,6 +47,7 @@ public class HmUserArgumentResolver implements HandlerMethodArgumentResolver {
 
 		StringBuffer tmp = new StringBuffer();
 		String[] val;
+		Field fie = null;
 		Field[] frr = parameter.getParameterType().getDeclaredFields();
 		for (Iterator<String> itr = webRequest.getParameterNames(); itr.hasNext();) {
 			tmp.delete(0, tmp.length());
@@ -58,8 +59,13 @@ public class HmUserArgumentResolver implements HandlerMethodArgumentResolver {
 				frr[i].setAccessible(true);
 				String filed = objName + frr[i].getName();
 				if (tmp.toString().equals(filed)) {
+					// TODO 缺少类型转换 java.lang.IllegalArgumentException: Can not
+					// set java.lang.Integer field
+					// com.hhcf.backend.model.HmUserEntity.age to
+					// java.lang.String
 					val = webRequest.getParameterValues(tmp.toString());
-					frr[i].set(obj, val[0]);
+					fie = frr[i];
+					fie.set(obj, val[0]);
 				}
 			}
 		}
