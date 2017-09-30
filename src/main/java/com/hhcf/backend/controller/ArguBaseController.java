@@ -4,8 +4,11 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSON;
 import com.hhcf.annotation.HmForm;
@@ -32,21 +35,26 @@ public class ArguBaseController {
 	 * @see http://127.0.0.1:8380/mavApiSerNoDB/arguBase/testArgu.do
 	 * @see aa
 	 */
-	@RequestMapping(value = "/testArgu", method = RequestMethod.POST)
-	public Object testArgu(@HmForm("hm") HmUserEntity hmUser, @HmForm("zxb") ZxbUserEntity zxbUser) {
+	@ResponseBody
+	@RequestMapping(value = "/testArgu")
+	public Object testArgu(ModelAndView model, @HmForm("hm") HmUserEntity hmUser,
+			@ZxbForm("zxb") ZxbUserEntity zxbUser) {
 		logger.info("HM参数:" + JSON.toJSONString(hmUser));
 		logger.info("ZXB参数:" + JSON.toJSONString(zxbUser));
-		return new Date();
+		model.getModel().put("hm", hmUser);
+		model.getModel().put("ztf", zxbUser);
+		return model.getModel();
 	}
 
 	/**
 	 * @see http://127.0.0.1:8380/mavApiSerNoDB/arguBase/testParams.do
 	 */
-	@RequestMapping(value = "/testParams", method = RequestMethod.POST)
-	public String testParams(HmUserEntity hmUser) {
+	@ResponseBody
+	@RequestMapping(value = "/testParams")
+	public Object testParams(HmUserEntity hmUser) {
 		logger.info("HM参数:" + JSON.toJSONString(hmUser));
 		// logger.info("ZXB参数:" + JSON.toJSONString(zxbUser));
-		return new Date().toString();
+		return new Date();
 	}
 
 }
