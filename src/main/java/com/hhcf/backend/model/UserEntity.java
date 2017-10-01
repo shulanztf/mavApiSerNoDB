@@ -1,11 +1,14 @@
 package com.hhcf.backend.model;
 
+import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.hhcf.backend.validate.VaildGroup1;
 
@@ -25,21 +28,25 @@ import com.hhcf.backend.validate.VaildGroup1;
 @SuppressWarnings("serial")
 public class UserEntity implements java.io.Serializable {
 	private Long id;
-	@NotBlank(message="汉字aaaaa")
+	@NotBlank(message = "用户名称不能为空")
 	private String userName;
-	@Size(max = 3, min = 1,message="o式木木木木木木木木木木木木")
+	@Size(max = 3, min = 1, message = "密码长度大于0，小于4")
 	private String password;
-	@Max(value = 10,message="中10a为")
+	// @Max(value = 10,message="中10a为")
+	@DecimalMax(value = "10")
 	private Integer age;
 	/** 登录者 */
 	private java.lang.String insertuser;
 	/** 登录日时 */
+	@Past
 	private java.util.Date inserttime;
 	/** 登录者IP */
 	private java.lang.String insertip;
 	/** 更新者 */
 	private java.lang.String updateuser;
 	/** 更新日时 */
+	@Past
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private java.util.Date updatetime;
 	/** 更新者IP */
 	private java.lang.String updateip;

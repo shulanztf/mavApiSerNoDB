@@ -79,6 +79,8 @@
 		<property name="defaultEncoding" value="UTF-8" />
 		<property name="cacheSeconds" value="60" />
 	</bean>
+	<!--注册Bean验证后处理器-->  
+	<bean class="org.springframework.validation.beanvalidation.BeanValidationPostProcessor"/>  
 
 
 	<!-- 处理.. -->

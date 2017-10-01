@@ -1,6 +1,5 @@
 package com.hhcf.backend.controller;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -8,17 +7,17 @@ import javax.validation.Valid;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.DataBinder;
 import org.springframework.validation.ObjectError;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hhcf.annotation.HmForm;
 import com.hhcf.backend.model.UserEntity;
-import com.hhcf.backend.validate.VaildGroup1;
+import com.hhcf.validate.UserValidator;
 
 /**
  * 
@@ -33,13 +32,19 @@ import com.hhcf.backend.validate.VaildGroup1;
 public class ValidBaseController {
 	private static Logger logger = Logger.getLogger(ValidBaseController.class);
 
+	// @InitBinder
+	// public void initBinder(DataBinder binder) {
+	// logger.info("user校验器加载");
+	// binder.setValidator(new UserValidator());
+	// }
+
 	/**
 	 * @see http://127.0.0.1:8080/mavApiSerNoDB/validBase/validaHiberArgu.do
 	 */
 	@ResponseBody
 	@RequestMapping("/validaHiberArgu")
 	public Object validaHiberArgu(ModelAndView mv,
-			@HmForm("al") UserEntity user, BindingResult bindingResult)
+			@Valid @HmForm("al") UserEntity user, BindingResult bindingResult)
 			throws Exception {
 		logger.info("参数校验:" + JSONObject.toJSONString(user));
 
