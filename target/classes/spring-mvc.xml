@@ -14,6 +14,8 @@
 
 	<context:component-scan base-package="com.hhcf.backend.*" />
 
+
+
 	<!-- 注解请求映射 -->
 	<bean
 		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
@@ -40,7 +42,45 @@
 				<ref bean="jackson_hmc" />
 			</list>
 		</property>
+		<!-- 自定义解析器实现请求参数绑定方法参数 -->
+		<property name="customArgumentResolvers">
+			<list>
+				<bean class="com.hhcf.method.HmUserArgumentResolver"></bean>
+			</list>
+		</property>
 	</bean>
+	<!-- 基于注解驱动 <mvc:annotation-driven> <mvc:argument-resolvers> <bean class="com.hhcf.method.HmUserArgumentResolver"/> 
+		</mvc:argument-resolvers> </mvc:annotation-driven> -->
+
+
+
+
+	<!-- 指定自己定义的validator -->
+	<mvc:annotation-driven validator="validator" />
+
+	<!-- 以下 validator ConversionService 在使用 mvc:annotation-driven 会 自动注册 -->
+	<bean id="validator"
+		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
+		<!-- 如果不加默认到 使用classpath下的 ValidationMessages.properties -->
+		<property name="validationMessageSource" ref="messageSource" />
+	</bean>
+	<!-- 国际化的消息资源文件（本系统中主要用于显示/错误消息定制） -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<!-- 在web环境中一定要定位到classpath 否则默认到当前web应用下找 -->
+				<value>classpath:messages</value>
+				<value>classpath:org/hibernate/validator/ValidationMessages</value>
+			</list>
+		</property>
+		<property name="useCodeAsDefaultMessage" value="false" />
+		<property name="defaultEncoding" value="UTF-8" />
+		<property name="cacheSeconds" value="60" />
+	</bean>
+
+
 	<!-- 处理.. -->
 	<bean id="byteArray_hmc"
 		class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
