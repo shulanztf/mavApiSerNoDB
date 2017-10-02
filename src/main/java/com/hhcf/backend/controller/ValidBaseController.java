@@ -7,17 +7,16 @@ import javax.validation.Valid;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.DataBinder;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hhcf.annotation.HmForm;
 import com.hhcf.backend.model.UserEntity;
-import com.hhcf.validate.UserValidator;
 
 /**
  * 
@@ -31,12 +30,6 @@ import com.hhcf.validate.UserValidator;
 @RequestMapping("/validBase")
 public class ValidBaseController {
 	private static Logger logger = Logger.getLogger(ValidBaseController.class);
-
-	// @InitBinder
-	// public void initBinder(DataBinder binder) {
-	// logger.info("user校验器加载");
-	// binder.setValidator(new UserValidator());
-	// }
 
 	/**
 	 * @see http://127.0.0.1:8080/mavApiSerNoDB/validBase/validaHiberArgu.do
@@ -63,18 +56,20 @@ public class ValidBaseController {
 	 */
 	@ResponseBody
 	@RequestMapping("/validaHiberParams")
-	public Object validaHiberParams(@Valid UserEntity user,
-			BindingResult bindingResult) throws Exception {
+	public Object validaHiberParams(@Valid UserEntity user, BindingResult br)
+			throws Exception {
 		logger.info("参数校验:" + JSONObject.toJSONString(user));
 
-		if (bindingResult.hasErrors()) {
-			List<ObjectError> errList = bindingResult.getAllErrors();
+		if (br.hasErrors()) {
+			List<ObjectError> errList = br.getAllErrors();
+			logger.error("参数校验错误信息AA:" + JSONArray.toJSONString(errList));
 			for (ObjectError err : errList) {
+				logger.info("错误对象解析:" + JSON.toJSONString(err));
 				logger.error("参数校验错误信息:" + err.getDefaultMessage());
 			}
 		}
 		ModelAndView mv = new ModelAndView();
-		mv.getModel().put("err", bindingResult.getAllErrors());
+		mv.getModel().put("err", br.getAllErrors());
 		return mv.getModel();
 	}
 
