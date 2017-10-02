@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.format.number.CurrencyFormatter;
 import org.springframework.format.number.NumberFormatter;
 import org.springframework.format.support.DefaultFormattingConversionService;
@@ -159,6 +160,7 @@ public class HmUserArgumentResolver implements HandlerMethodArgumentResolver {
 				+ ".";// 获取注解里的逻辑名
 		Object obj = parameter.getParameterType().newInstance();// 实例化对象
 
+		// 数据绑定
 		StringBuffer tmp = new StringBuffer();
 		String[] val;
 		Field fie = null;
@@ -168,30 +170,31 @@ public class HmUserArgumentResolver implements HandlerMethodArgumentResolver {
 			tmp.delete(0, tmp.length());
 			tmp.append(itr.next());
 			if (tmp.indexOf(objName) < 0) {
+				logger.info("属性未找到，暂不转换，AA:" + tmp.toString() + ":" + objName);
 				continue;
 			}
 			for (int i = 0; i < frr.length; i++) {
 				frr[i].setAccessible(true);
 				String filed = objName + frr[i].getName();
 
-				logger.info("属性类型判断:" + filed + "" + frr[i].getType());
-				if (frr[i].getType().equals(Field.class)) {
-
-				}
 				if (!tmp.toString().equals(filed)) {
+					// logger.info("属性未找到，暂不转换:" + tmp.toString() + ":" +
+					// filed);
 					continue;
 				}
 				val = webRequest.getParameterValues(tmp.toString());
 				fie = frr[i];
 				// 数字类型
+				// 参数绑定+校验，类型无法转换的，抛出异常
 				if (Number.class.isAssignableFrom(frr[i].getType())) {
-					Class<Number> cc1 = (Class<Number>) frr[i].getType();
-					fie.set(obj, NumberUtils.parseNumber(val[0], cc1));
+					fie.set(obj, NumberUtils.parseNumber(val[0],
+							(Class<Number>) frr[i].getType()));
 				} else if (String.class.isAssignableFrom(frr[i].getType())) {
 					fie.set(obj, val[0]);
 				} else if (Date.class.isAssignableFrom(frr[i].getType())) {
-					logger.info("日期类型属性，暂不转换:" + frr[i].getName() + ","
-							+ val[0]);
+					fie.set(obj, conversionFormat(val[0],frr[i].getType()));
+				} else {
+					logger.info("未找到属性，不转换:" + frr[i].getName() + "," + val[0]);
 				}
 			}
 		}
@@ -238,58 +241,66 @@ public class HmUserArgumentResolver implements HandlerMethodArgumentResolver {
 	}
 
 	public static void main(String[] args) {
+		// DefaultFormattingConversionService conversionService = new
+		// DefaultFormattingConversionService();
+		// // 默认不自动注册任何Formatter
+		// CurrencyFormatter currencyFormatter = new CurrencyFormatter();// 金额
+		// currencyFormatter.setFractionDigits(2);// 保留小数点后几位
+		// currencyFormatter.setRoundingMode(RoundingMode.CEILING);//
+		// 舍入模式（ceilling表示四舍五入）
+		// // 注册Formatter SPI实现
+		// conversionService.addFormatter(currencyFormatter);
+		//
+		// NumberFormatter nf = new NumberFormatter();// 数字
+		// conversionService.addFormatter(nf);
+		//
+		// DateFormatter df = new DateFormatter("yyyy-MM-dd");// 日期
+		// conversionService.addFormatter(df);
+		//
+		// System.out.println("字符转数字:"
+		// + conversionService.convert("444444", Integer.class));
+		// System.out.println("字符转日期:"
+		// + conversionService.convert("2016-07-03", Date.class));
+		try {
+			System.out.println("字符转数字:"
+					+ conversionFormat("444444", Integer.class));
+			System.out.println("字符转日期:"
+					+ conversionFormat("2016-07-03", Date.class));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public static Object conversionFormat(String val, Class<?> targetClass)
+			throws Exception {
+		if (Number.class.isAssignableFrom(targetClass)) {
+		} else if (String.class.isAssignableFrom(targetClass)) {
+		} else if (Date.class.isAssignableFrom(targetClass)) {
+		} else {
+			throw new Exception("不支持的转换类型:" + targetClass);
+		}
+
 		DefaultFormattingConversionService conversionService = new DefaultFormattingConversionService();
 		// 默认不自动注册任何Formatter
-		CurrencyFormatter currencyFormatter = new CurrencyFormatter();
+		CurrencyFormatter currencyFormatter = new CurrencyFormatter();// 金额
 		currencyFormatter.setFractionDigits(2);// 保留小数点后几位
 		currencyFormatter.setRoundingMode(RoundingMode.CEILING);// 舍入模式（ceilling表示四舍五入）
 		// 注册Formatter SPI实现
-		// conversionService.addFormatter(currencyFormatter);
+		conversionService.addFormatter(currencyFormatter);
 
-		NumberFormatter nf = new NumberFormatter();
+		NumberFormatter nf = new NumberFormatter();// 数字
 		conversionService.addFormatter(nf);
 
-		// System.out.println("ccc:"
-		// + conversionService.convert(new BigDecimal("1234.128"),
-		// String.class));
-		// System.out.println("tttt:"
-		// + conversionService.convert("￥1,234.13", BigDecimal.class));
-		System.out.println("aaaaa:"
-				+ conversionService.convert("444444", Integer.class));
-		// System.out.println("eee:"
-		// + conversionService.convert("￥333.3", Integer.class));
+		DateFormatter df = new DateFormatter("yyyy-MM-dd");// 日期
+		conversionService.addFormatter(df);
 
-		// LocaleContextHolder.setLocale(Locale.US);
-		// Assert.assertEquals("$1,234.13", conversionService.convert(
-		// new BigDecimal("1234.128"), String.class));
-		// LocaleContextHolder.setLocale(null);
+		// System.out.println("字符转数字:"
+		// + conversionService.convert("444444", Integer.class));
+		// System.out.println("字符转日期:"
+		// + conversionService.convert("2016-07-03", Date.class));
+		return conversionService.convert(val, targetClass);
 	}
-
-	// public void testWithDefaultFormattingConversionService() {
-	// DefaultFormattingConversionService conversionService = new
-	// DefaultFormattingConversionService();
-	// // 默认不自动注册任何Formatter
-	// CurrencyFormatter currencyFormatter = new CurrencyFormatter();
-	// currencyFormatter.setFractionDigits(2);// 保留小数点后几位
-	// currencyFormatter.setRoundingMode(RoundingMode.CEILING);//
-	// 舍入模式（ceilling表示四舍五入）
-	// // 注册Formatter SPI实现
-	// conversionService.addFormatter(currencyFormatter);
-	//
-	// // 绑定Locale信息到ThreadLocal
-	// // FormattingConversionService内部自动获取作为Locale信息，如果不设值默认是
-	// // Locale.getDefault()
-	// LocaleContextHolder.setLocale(Locale.US);
-	// Assert.assertEquals("$1,234.13", conversionService.convert(
-	// new BigDecimal("1234.128"), String.class));
-	// LocaleContextHolder.setLocale(null);
-	//
-	// LocaleContextHolder.setLocale(Locale.CHINA);
-	// Assert.assertEquals("￥1,234.13", conversionService.convert(
-	// new BigDecimal("1234.128"), String.class));
-	// Assert.assertEquals(new BigDecimal("1234.13"),
-	// conversionService.convert("￥1,234.13", BigDecimal.class));
-	// LocaleContextHolder.setLocale(null);
-	// }
 
 }
