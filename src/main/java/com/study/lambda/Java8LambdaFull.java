@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.IntSummaryStatistics;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +25,19 @@ public class Java8LambdaFull {
 
 	public static void main(String[] args) {
 		Java8LambdaFull lambda = new Java8LambdaFull();
-		lambda.method5();
+		lambda.method6();
+	}
+
+	/**
+	 * @see 五.顺序流和并行流 每个Stream都有两种模式：顺序执行和并行执行
+	 * 
+	 */
+	public void method7() {
+		List<String> list = Arrays.asList("CA", "ES", "XE", "AA");
+		// 顺序流：
+		list.stream().collect(Collectors.toList());
+		// 并行流
+		list.stream().parallel().collect(Collectors.toList());
 	}
 
 	/**
@@ -35,6 +48,20 @@ public class Java8LambdaFull {
 	 * ，这个新生成的Stream中的元素都是int类型。之所以会有这样三个变种方法，可以免除自动装箱/拆箱的额外消耗；
 	 */
 	public void method6() {
+		List<String> li = Arrays.asList("aa", "cc", "ed");
+		li.parallelStream();
+		System.out.println("cc:" + li.toArray()[2]);
+
+		List<Integer> list = Arrays.asList(3, 13, 23);
+		int aa = list.stream().mapToInt((x) -> x).sum();
+		System.out.println("ttt:" + aa);
+		IntSummaryStatistics iss = list.stream().mapToInt(x -> x)
+				.summaryStatistics();
+		System.out.println("最大值:" + iss.getMax());
+		System.out.println("最小值:" + iss.getMin());
+		System.out.println("总个数-" + iss.getCount());
+		System.out.println("总和-" + iss.getSum());
+		System.out.println("平均值-" + iss.getAverage());
 
 	}
 
