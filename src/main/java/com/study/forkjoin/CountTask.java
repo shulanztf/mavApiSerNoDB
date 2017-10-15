@@ -19,7 +19,7 @@ public class CountTask extends RecursiveTask<Integer> {
 	public static void main(String[] args) {
 		ForkJoinPool pool = new ForkJoinPool();
 		// 生成任务，计算1+2+……+10
-		CountTask ct1 = new CountTask(1, 100000);
+		CountTask ct1 = new CountTask(1, 10);
 		// 执行一个任务
 		ForkJoinTask<Integer> task = pool.submit(ct1);
 		try {
@@ -29,6 +29,7 @@ public class CountTask extends RecursiveTask<Integer> {
 		} catch (ExecutionException e) {
 			e.printStackTrace();
 		}
+		pool.shutdown();
 	}
 
 	private static final int THRESHOLD = 2;// 阈值
