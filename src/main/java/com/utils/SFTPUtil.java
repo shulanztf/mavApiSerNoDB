@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Collections;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -48,6 +49,8 @@ public class SFTPUtil {
 	/** FTP 端口 */
 	private int port;
 
+	
+	
 	/**
 	 *
 	 * @param args
@@ -58,6 +61,8 @@ public class SFTPUtil {
 		SFTPUtil sftpU = new SFTPUtil("jzcfycgsftp", "4RFV87aSFG93bNPQ", "ftp-1.fuiou.com", 9022);
 		sftpU.login();
 
+//		Collections.synchronizedMap(m;)
+		
 		FileInputStream input = null;
 		try {
 			// File file = null;

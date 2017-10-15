@@ -25,7 +25,19 @@ public class Java8LambdaFull {
 
 	public static void main(String[] args) {
 		Java8LambdaFull lambda = new Java8LambdaFull();
-		lambda.method6();
+//		lambda.method6();
+		lambda.r1.run();
+	}
+
+	// 匿名函数
+	Runnable r1 = () -> {
+		System.out.println(this);
+	};
+
+	/**
+	 */
+	public void method8() {
+
 	}
 
 	/**
