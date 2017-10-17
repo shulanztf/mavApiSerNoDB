@@ -1,5 +1,6 @@
 package com.study.concurrent.lock;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +29,9 @@ public class ZxbBadWordUtil {
 	private static volatile long lastModified = 0L;
 	private static List<String> words = new ArrayList<String>();
 	private static ReentrantLock lock = new ReentrantLock();// 随机锁，并且创建condition阻塞队列
+
+	private static final Unsafe unsafe = Unsafe.getUnsafe();
+	
 	// private static Condition cond = lock.newCondition();
 
 	public static void main(String[] args) {
@@ -53,17 +57,23 @@ public class ZxbBadWordUtil {
 	 */
 	private static void checkReloadConcurrent() {
 		// 采用while，禁用if
+		logger.info(Thread.currentThread().getId() + ":加锁前检查:"
+				+ words.toString());
 		try {
-			System.out.println(Thread.currentThread().getId() + ":添加前:" + words.toString());
 			while (wordfilter.lastModified() > lastModified) {
-				logger.info(Thread.currentThread().getId() + ":最后修改时间:" + lastModified);
+//				logger.info(Thread.currentThread().getId() + ":添加前:"
+//						+ words.toString());
+//				logger.info(Thread.currentThread().getId() + ":最后修改时间:"
+//						+ lastModified);
 				if (lock.tryLock()) {
 					logger.info(Thread.currentThread().getId() + ":获取了锁……");
 					words.clear();// 清空原有词列表
-					LineIterator lines = FileUtils.lineIterator(wordfilter, "utf-8");
+					LineIterator lines = FileUtils.lineIterator(wordfilter,
+							"utf-8");
 					String[] wordArr = null;
 					while (lines.hasNext()) {
-						wordArr = StringUtils.split(lines.nextLine(), ",|，| | ");
+						wordArr = StringUtils
+								.split(lines.nextLine(), ",|，| | ");
 						if (null == wordArr || wordArr.length <= 0) {
 							continue;
 						}
@@ -74,17 +84,18 @@ public class ZxbBadWordUtil {
 						}
 					}
 					lastModified = wordfilter.lastModified();
-					System.out.println(
-							Thread.currentThread().getId() + ":添加后:" + words.toString() + ",最后修改时间:" + lastModified);
+					logger.info(Thread.currentThread().getId() + ":添加后:"
+							+ words.toString() + ",最后修改时间:" + lastModified);
 				} else {
 					logger.info(Thread.currentThread().getId() + ":开始等待");
 					// TimeUnit.SECONDS.sleep(1); // 未取到锁，一秒后再试
 					Thread.sleep(500);// 未取到锁，暂停后再试
-					logger.info(Thread.currentThread().getId() + ":再次获取锁，最后修改时间:" + lastModified);
+					logger.info(Thread.currentThread().getId()
+							+ ":再次获取锁，最后修改时间:" + lastModified);
 					checkReloadConcurrent();
 				}
+				logger.info(Thread.currentThread().getId() + ":结束词列表处理");
 			}
-			logger.info(Thread.currentThread().getId() + ":结束词列表处理");
 		} catch (Exception e) {
 			logger.error(Thread.currentThread().getId() + ":设置词列表异常", e);
 		} finally {
@@ -103,10 +114,12 @@ public class ZxbBadWordUtil {
 			synchronized (ZxbBadWordUtil.class) {
 				try {
 					lastModified = wordfilter.lastModified();
-					LineIterator lines = FileUtils.lineIterator(wordfilter, "utf-8");
+					LineIterator lines = FileUtils.lineIterator(wordfilter,
+							"utf-8");
 					String[] wordArr = null;
 					while (lines.hasNext()) {
-						wordArr = StringUtils.split(lines.nextLine(), ",|，| | ");
+						wordArr = StringUtils
+								.split(lines.nextLine(), ",|，| | ");
 						if (null == wordArr || wordArr.length <= 0) {
 							continue;
 						}
