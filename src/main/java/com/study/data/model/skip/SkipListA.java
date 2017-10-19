@@ -66,8 +66,7 @@ public class SkipListA {
 	 * @return int
 	 */
 	public int add(String key, int val) {
-		Node temp;
-		temp = findFull(key);
+		Node temp = findFull(key);// 找到根层节点
 		if (key.equals(temp.getKey())) {
 			System.out.println("对象属性完全相同无法添加！");
 			int a = temp.value;
@@ -79,14 +78,14 @@ public class SkipListA {
 		temp1.setRight(temp.getRight());
 		temp.getRight().setLeft(temp1);
 		temp.setRight(temp1);
-		int lev = 0; // 当前层数
+		int lev = 0; // 从根层向上 设置用
 
 		Node p1, p2;
 		while (rand.nextDouble() < 0.5) { // 进行随机，是否需要 在上层添加
 			if (lev >= level) { // 若当前层数超出了高度，则需要另建一层
 				level = level + 1;
-				p1 = new Node(Node.tou, 0);
-				p2 = new Node(Node.wei, 0);
+				p1 = new Node(Node.tou, 0);// 头节点
+				p2 = new Node(Node.wei, 0);// 尾节点
 
 				p1.setRight(p2);
 				p1.setDown(head);
@@ -116,7 +115,6 @@ public class SkipListA {
 
 			temp1 = node;
 			lev = lev + 1;
-
 		}
 
 		size = size + 1;
@@ -233,8 +231,8 @@ class Node {
 	public String key;// 位置
 	public int value;// 内容
 	public Node up, down, left, right;// 上/下/左/右
-	public static String tou = "【头】";
-	public static String wei = "【尾】";
+	public static String tou = "【头】";// 头节点位置
+	public static String wei = "【尾】";// 尾节点位置
 
 	public Node(String key, int val) {
 		this.key = key;

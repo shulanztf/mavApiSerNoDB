@@ -29,13 +29,13 @@ public class SkipList<T> {
 						int ind = Integer.valueOf(Thread.currentThread().getId() + "000" + i);
 						String text = Thread.currentThread().getId() + ":aaaa:" + al.getAndIncrement();
 						list.put(ind, text);
-						System.out.println("添加:" + text);
+						System.out.println("添加:" + ind + "-" + text);
 					}
 				}
 			});
 		}
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(1000 * 1);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
