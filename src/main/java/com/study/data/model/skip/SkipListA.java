@@ -15,29 +15,24 @@ public class SkipListA {
 
 	public static void main(String[] args) {
 		SkipListA sla = new SkipListA();
-		// s.add("AAA", 122);
 		for (int i = 0; i < 30; i++) { // 随机数字进行测试
 			sla.add(String.valueOf(i), i);
 		}
 		sla.print();
+
 		System.out.println("-------------------------------------------");
+
 		String serch = String.valueOf(sla.rand.nextInt(30));
 		if (sla.find(serch) != null) { // 查找
 			System.out.println("\nOK");
 		} else {// 找不到
 			System.out.println("\nfalse");
-
 		}
-		// sla.delNode("0"); // 删除
-		// sla.print();
 
-		// SkipListA sl = new SkipListA();
-		// sl.add("tt", 53);
-		// sl.add("aa", 3);
-		// sl.add("bb", 6);
-		// sl.add("ww", 16);
-		// sl.print();
-		// System.out.println(sl);
+		System.out.println("-------------------------------------------");
+
+		sla.delNode(serch); // 删除
+		sla.print();
 	}
 
 	public Node head; // 头节点
@@ -72,7 +67,7 @@ public class SkipListA {
 	 */
 	public int add(String key, int val) {
 		Node temp;
-		temp = findF(key);
+		temp = findFull(key);
 		if (key.equals(temp.getKey())) {
 			System.out.println("对象属性完全相同无法添加！");
 			int a = temp.value;
@@ -129,7 +124,7 @@ public class SkipListA {
 	}
 
 	/**
-	 * 节点查找
+	 * 节点快速查找
 	 */
 	public Node find(String key) {
 		System.out.println("查找路线:" + key); // 用于测试
@@ -166,12 +161,12 @@ public class SkipListA {
 	}
 
 	/**
-	 * 找到需要插入位置的前一个节点
+	 * 找到需要插入位置的前一个节点，节点深层查找
 	 * 
 	 * @param key
 	 * @return Node
 	 */
-	public Node findF(String key) {
+	public Node findFull(String key) {
 		Node temp = head;
 		while (true) {
 			// 当前节点的右节点,不是尾节点,并且,不能比key大
@@ -198,7 +193,7 @@ public class SkipListA {
 	 * @param k
 	 */
 	public void delNode(String k) {
-		Node temp = find(k);
+		Node temp = findFull(k);
 		while (temp != null) {
 			temp.getLeft().setRight(temp.getRight());
 			temp.getRight().setLeft(temp.getLeft());
