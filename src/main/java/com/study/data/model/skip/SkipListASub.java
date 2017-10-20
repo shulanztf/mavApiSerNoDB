@@ -1,26 +1,23 @@
 package com.study.data.model.skip;
 
-import java.util.Comparator;
 import java.util.Random;
 
 /**
  * 
- * @param <T>
- * @Title: SkipListALocal
+ * @ClassName: SkipListASub
  * @Description:JAVA SkipList 跳表 的原理
  * @see http://blog.csdn.net/sun_ru/article/details/51917273
- * @Author: zhaotf
- * @Since:2017年10月19日 下午5:53:04
- * @Version:1.0
+ * @author: zhaotf
+ * @date: 2017年10月20日 下午9:11:15
  */
-public class SkipListALocal<K extends Comparable<K>, V extends Object> {
+public class SkipListASub<K extends Comparable<K>, V extends Object> {
 
 	public static void main(String[] args) {
-		SkipListALocal<String, Object> sla = new SkipListALocal<String, Object>();
+		SkipListASub<String, Object> sla = new SkipListASub<String, Object>();
 		for (int i = 0; i < 40; i++) {
 			sla.add(String.valueOf(i), "val" + i);
 		}
-		sla.print();
+		sla.pring();
 		System.out.println("-------------------------------------------");
 		String key = String.valueOf(sla.rand.nextInt(40));
 		if (sla.find(key) != null) {
@@ -29,21 +26,24 @@ public class SkipListALocal<K extends Comparable<K>, V extends Object> {
 			System.out.println("\nfalse");
 		}
 		System.out.println("-------------------------------------------");
-
-		sla.delNode(key); // 删除
-		sla.print();
-
+		SkipListASub<Integer, Object> intsla = new SkipListASub<Integer, Object>();
+		for (int i = 0; i < 40; i++) {
+			intsla.add(Integer.valueOf(i), "val" + i);
+		}
+		intsla.pring();
 	}
 
+	public final String tou = "【头】";// 头节点位置
+	public final String wei = "【尾】";// 尾节点位置
 	private SkipNode head;// 头节点
 	private SkipNode tail;// 尾结点
 	private int level = 0;// 层数
 	private int size = 0;// 元素个数
 	private Random rand;// 每次的随机数用来确定需不需要增加层数
 
-	public SkipListALocal() {
-		this.head = new SkipNode<String, Object>(SkipNode.tou, SkipNode.tou);
-		this.tail = new SkipNode<String, Object>(SkipNode.wei, SkipNode.wei);
+	public SkipListASub() {
+		this.head = new SkipNode(tou, tou);
+		this.tail = new SkipNode(wei, wei);
 		head.right = tail;
 		tail.left = head;
 		this.rand = new Random();
@@ -79,11 +79,10 @@ public class SkipListALocal<K extends Comparable<K>, V extends Object> {
 		// 随机，是否将新节点，添加到上层
 		while (rand.nextDouble() < 0.5) {
 			// 若当前层数超出了高度，则需要另建一层，并进入上一层
-			// 第层不少于两个数据节点
 			if (lev >= level) {
 				level++;
-				sn1 = new SkipNode(SkipNode.tou, null);// 头节点
-				sn2 = new SkipNode(SkipNode.wei, null);// 尾节点
+				sn1 = new SkipNode(tou, null);// 头节点
+				sn2 = new SkipNode(wei, null);// 尾节点
 				sn1.right = sn2;
 				sn1.down = head;
 				sn2.left = sn1;
@@ -131,8 +130,7 @@ public class SkipListALocal<K extends Comparable<K>, V extends Object> {
 			count++;
 			System.out.print("第" + index + "层,");
 			// 从左向右找
-			while (node.right.key != SkipNode.wei
-					&& node.right.key.compareTo(key) <= 0) {
+			while (node.right.key != wei && node.right.key.compareTo(key) <= 0) {
 				count++;
 				// 替换到右节点,直到尾节点
 				node = node.right;
@@ -168,8 +166,7 @@ public class SkipListALocal<K extends Comparable<K>, V extends Object> {
 		SkipNode<K, V> node = head;
 		while (true) {
 			// 从左向右找
-			while (node.right.key != SkipNode.wei
-					&& node.right.key.compareTo(key) <= 0) {
+			while (node.right.key != wei && node.right.key.compareTo(key) <= 0) {
 				// 当链表最底层不为空的时候，从当前层向尾部方向开始查找，直到查找temp.getRight的下一个值大于
 				// 当前k的值为止，此时temp小于或等于当前k的值 要插入的位置即为temp之后的位置了
 				node = node.right;
@@ -217,7 +214,7 @@ public class SkipListALocal<K extends Comparable<K>, V extends Object> {
 	 * 
 	 * void
 	 */
-	public void print() {
+	public void pring() {
 		SkipNode<K, V> node;
 		SkipNode<K, V> node1 = this.head;
 		int lev = 0;// 层号
@@ -251,8 +248,6 @@ public class SkipListALocal<K extends Comparable<K>, V extends Object> {
 		private K key;// 位置
 		private V value;// 内容
 		private SkipNode<K, V> up, down, left, right;// 上/下/左/右
-		public static final String tou = "【头】";// 头节点位置
-		public static final String wei = "【尾】";// 尾节点位置
 
 		public SkipNode() {
 		}
@@ -261,56 +256,6 @@ public class SkipListALocal<K extends Comparable<K>, V extends Object> {
 			this.key = key;
 			this.value = val;
 		}
-
-		// public static final int HEAD_KEY = Integer.MIN_VALUE; // 负无穷
-		// public static final int TAIL_KEY = Integer.MAX_VALUE; // 正无穷
-		// public String getKey() {
-		// return key;
-		// }
-		//
-		// public void setKey(String key) {
-		// this.key = key;
-		// }
-		//
-		// public T getValue() {
-		// return value;
-		// }
-		//
-		// public void setValue(T value) {
-		// this.value = value;
-		// }
-		//
-		// public SkipNode<T> getUp() {
-		// return up;
-		// }
-		//
-		// public void setUp(SkipNode<T> up) {
-		// this.up = up;
-		// }
-		//
-		// public SkipNode<T> getDown() {
-		// return down;
-		// }
-		//
-		// public void setDown(SkipNode<T> down) {
-		// this.down = down;
-		// }
-		//
-		// public SkipNode<T> getLeft() {
-		// return left;
-		// }
-		//
-		// public void setLeft(SkipNode<T> left) {
-		// this.left = left;
-		// }
-		//
-		// public SkipNode<T> getRight() {
-		// return right;
-		// }
-		//
-		// public void setRight(SkipNode<T> right) {
-		// this.right = right;
-		// }
-
 	}
+
 }
