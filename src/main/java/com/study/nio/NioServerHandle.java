@@ -120,20 +120,21 @@ public class NioServerHandle implements Runnable {
 					bb.flip(); // 将缓冲区当前的limit设置为position=0，用于后续对缓冲区的读取操作
 					byte[] bytes = new byte[bb.remaining()]; // 根据缓冲区可读字节数创建字节数组
 					bb.get(bytes); // 将缓冲区可读字节数组复制到新建的数组中
-					String expression = new String(bytes, "UTF-8");
-					System.out.println("NIO服务器收到消息:" + Thread.currentThread().getId() + ":" + expression);
+					String msg = new String(bytes, "UTF-8");
+					System.out.println("NIO服务器收到消息:" + Thread.currentThread().getId() + ":" + msg);
 					// 处理数据
-					String result = null;
+					String rslt = null;
 					try {
-						result = CalculatorUtils.cal(expression).toString();
+						// rslt = CalculatorUtils.cal(msg).toString();
+						rslt = "处理后台=" + msg;
 					} catch (Exception e) {
-						result = "计算错误：" + e.getMessage();
-						System.out.println("服务端异常发生:" + Thread.currentThread().getId() + ":" + result);
+						rslt = "计算错误：" + e.getMessage();
+						System.out.println("服务端异常发生:" + Thread.currentThread().getId() + ":" + rslt);
 						TimeUnit.SECONDS.sleep(3);// 出现异常，暂停5秒
 					}
-					System.out.println("服务器处理结果:" + Thread.currentThread().getId() + ":" + result);
+					System.out.println("服务器处理结果:" + Thread.currentThread().getId() + ":" + rslt);
 					// 发送应答消息
-					doWrite(sc, result);
+					doWrite(sc, rslt);
 				} else if (readBytes == 0) {
 					// 没有读取到字节 忽略
 				} else if (readBytes < 0) {

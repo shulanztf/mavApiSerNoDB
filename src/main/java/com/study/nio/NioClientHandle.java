@@ -105,7 +105,7 @@ public class NioClientHandle implements Runnable {
 					byte[] bytes = new byte[buffer.remaining()]; // 根据缓冲区可读字节数创建字节数组
 					buffer.get(bytes); // 将缓冲区可读字节数组复制到新建的数组中
 					String result = new String(bytes, "UTF-8");
-					System.out.println("NIO客户端收到消息:" + Thread.currentThread().getId() + ":" + result);
+					System.out.println(Thread.currentThread().getId() + ":NIO客户端收到消息:" + result);
 				} else if (readBytes == 0) {
 					// 没有读取到字节 忽略
 				} else if (readBytes < 0) {
@@ -121,11 +121,11 @@ public class NioClientHandle implements Runnable {
 	 * 异步发送消息
 	 * 
 	 * @param channel
-	 * @param request
+	 * @param msg
 	 * @throws IOException
 	 */
-	private void doWrite(SocketChannel channel, String request) throws IOException {
-		byte[] bytes = request.getBytes(); // 将消息编码为字节数组
+	private void doWrite(SocketChannel channel, String msg) throws IOException {
+		byte[] bytes = msg.getBytes(); // 将消息编码为字节数组
 		ByteBuffer writeBuffer = ByteBuffer.allocate(bytes.length); // 根据数组容量创建ByteBuffer
 		writeBuffer.put(bytes); // 将字节数组复制到缓冲区
 		writeBuffer.flip(); // flip操作

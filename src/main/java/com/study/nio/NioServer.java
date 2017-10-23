@@ -1,5 +1,7 @@
 package com.study.nio;
 
+import java.util.Scanner;
+
 /**
  * 
  * @Title: NioServer
@@ -12,21 +14,38 @@ package com.study.nio;
 public class NioServer {
 	private static int DEFAULT_PORT = 12345;
 	private static NioServerHandle serverHandle;
-	private static Object lock = new Object();
 
+	/**
+	 * 启动服务，JAVA线程池方式
+	 * 
+	 * void
+	 */
 	public static void start() {
-		start(DEFAULT_PORT);
+		serverHandle = new NioServerHandle(DEFAULT_PORT);
+		new Thread(serverHandle, "HmNioServer").start();
+		System.out.println("NioServer 启动……");
 	}
 
-	public static void start(int port) {
-		synchronized (lock) {
-			if (serverHandle != null) {
-				serverHandle.stop();
-			}
-			serverHandle = new NioServerHandle(port);
+	/**
+	 * 停止服务
+	 * 
+	 * void
+	 */
+	public static void stop() {
+		if (serverHandle != null) {
+			serverHandle.stop();
 		}
-		new Thread(serverHandle, "HmNioServer").start();
-		System.out.println("NioServer 启动");
+	}
+
+	public static void main(String[] args) {
+		start();
+		System.out.println("NIO服务端测试开始……");
+		Scanner sca = new Scanner(System.in);
+		while (!"quit".equals(sca.nextLine())) {
+		}
+		stop();
+		sca.close();
+		System.out.println("NIO服务端退出……");
 	}
 
 }

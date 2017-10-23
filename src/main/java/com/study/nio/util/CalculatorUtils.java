@@ -7,7 +7,7 @@ import javax.script.ScriptException;
 /**
  * 
  * @Title: CalculatorUtils
- * @Description:
+ * @Description:JS JAVA模拟类
  * @Author: zhaotf
  * @Since:2017年9月13日 上午8:11:58
  * @Version:1.0
