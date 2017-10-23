@@ -30,6 +30,7 @@ import com.hhcf.backend.model.TestModel;
 import com.hhcf.backend.model.ZxbMoneyInRecModel;
 import com.hhcf.backend.model.ZxbMoneyOutRecModel;
 import com.hhcf.backend.service.GeneralService;
+import com.hhcf.backend.service.NettyBaseService;
 
 import net.sf.json.JSONObject;
 
@@ -44,10 +45,24 @@ import net.sf.json.JSONObject;
 @Controller
 @RequestMapping("/general")
 public class GeneralController {
-	private static final Logger logger = Logger.getLogger(GeneralController.class);
-
+	private static final Logger logger = Logger
+			.getLogger(GeneralController.class);
 	@Resource
 	private GeneralService generalService;
+	@Resource
+	private NettyBaseService nettyBaseService;
+
+	/**
+	 * @see http://localhost:8080/mavApiSerNoDB/general/getNettyMsg.do
+	 * @param request
+	 * @return String
+	 * @throws
+	 */
+	@RequestMapping("/getNettyMsg")
+	public Object getNettyMsg(HttpServletRequest request) {
+		Object obj = nettyBaseService.getMsg(request.getParameter("uname"));
+		return obj;
+	}
 
 	/**
 	 * 数据绑定测试 POST
@@ -56,11 +71,15 @@ public class GeneralController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/postDataTest", method = RequestMethod.POST)
-	public Object postDataTest(HttpServletRequest request, String msg, Integer pageNo, boolean filg) {
+	public Object postDataTest(HttpServletRequest request, String msg,
+			Integer pageNo, boolean filg) {
 		logger.info("数据绑定 ，POST请求:");
-		logger.info("数据绑定 ，request:" + request.getParameter("msg") + ",绑定数据:" + msg);
-		logger.info("数据绑定 ，request:" + request.getParameter("pageNo") + ",绑定数据:" + pageNo);
-		logger.info("数据绑定 ，request:" + request.getParameter("filg") + ",绑定数据:" + filg);
+		logger.info("数据绑定 ，request:" + request.getParameter("msg") + ",绑定数据:"
+				+ msg);
+		logger.info("数据绑定 ，request:" + request.getParameter("pageNo")
+				+ ",绑定数据:" + pageNo);
+		logger.info("数据绑定 ，request:" + request.getParameter("filg") + ",绑定数据:"
+				+ filg);
 		return "ovdata";
 	}
 
@@ -75,9 +94,12 @@ public class GeneralController {
 	@RequestMapping(value = "/postObjTest", method = RequestMethod.POST)
 	public Object postObjTest(HttpServletRequest request, TestModel obj) {
 		logger.info("数据绑定对象 ，POST请求:");
-		logger.info("数据绑定 ，request:" + request.getParameter("name") + ",绑定数据:" + obj.getName());
-		logger.info("数据绑定 ，request:" + request.getParameter("age") + ",绑定数据:" + obj.getAge());
-		logger.info("数据绑定 ，request:" + request.getParameter("good") + ",绑定数据:" + obj.isGood());
+		logger.info("数据绑定 ，request:" + request.getParameter("name") + ",绑定数据:"
+				+ obj.getName());
+		logger.info("数据绑定 ，request:" + request.getParameter("age") + ",绑定数据:"
+				+ obj.getAge());
+		logger.info("数据绑定 ，request:" + request.getParameter("good") + ",绑定数据:"
+				+ obj.isGood());
 		return "ovdata";
 	}
 
@@ -87,11 +109,15 @@ public class GeneralController {
 	 * @return Object
 	 */
 	@RequestMapping(value = "/getDataTest", method = RequestMethod.GET)
-	public Object getDataTest(HttpServletRequest request, String msg, Integer pageNo, boolean filg) {
+	public Object getDataTest(HttpServletRequest request, String msg,
+			Integer pageNo, boolean filg) {
 		logger.info("数据绑定 ，GET请求:");
-		logger.info("数据绑定 ，request:" + request.getParameter("msg") + ",绑定数据:" + msg);
-		logger.info("数据绑定 ，request:" + request.getParameter("pageNo") + ",绑定数据:" + pageNo);
-		logger.info("数据绑定 ，request:" + request.getParameter("filg") + ",绑定数据:" + filg);
+		logger.info("数据绑定 ，request:" + request.getParameter("msg") + ",绑定数据:"
+				+ msg);
+		logger.info("数据绑定 ，request:" + request.getParameter("pageNo")
+				+ ",绑定数据:" + pageNo);
+		logger.info("数据绑定 ，request:" + request.getParameter("filg") + ",绑定数据:"
+				+ filg);
 		return "ovdata";
 	}
 
@@ -105,7 +131,8 @@ public class GeneralController {
 	 */
 	@ResponseBody
 	@RequestMapping(params = "transact")
-	public void transact(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public void transact(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		response.setContentType("application/xml;charset=UTF-8");
 		// String xml = (String) depositTransactService.transact(request);
 		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ap><plain><resp_code>0000</resp_code><resp_desc>成功</resp_desc><mchnt_cd>0003310F0352406</mchnt_cd><mchnt_txn_ssn>HF1500885462332</mchnt_txn_ssn></plain><signature>bw75avvsmJChwl57lhHt48rlCBewLVvbPiBIfuA9rWidct4mTMMcr9B4XvFMfaPFlSz2FchExCVRH0hTfK2Y3PKOrmee3KFgxqlKEu+zI5bZyPCJDrEEgGUHQurh04VfVSwCc4nWztJHp3ZOf9JOHglendOdnM1NHcnURUSGS2s=</signature></ap>";
@@ -125,8 +152,10 @@ public class GeneralController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/exportInXls")
-	public String exportInXls(HttpServletRequest request, ModelMap modelMap) throws Exception {
-		List<ZxbMoneyInRecModel> incomes = this.generalService.findZxbMoneyInRecList(request);
+	public String exportInXls(HttpServletRequest request, ModelMap modelMap)
+			throws Exception {
+		List<ZxbMoneyInRecModel> incomes = this.generalService
+				.findZxbMoneyInRecList(request);
 		modelMap.put(NormalExcelConstants.FILE_NAME, "Exctl导出信息");
 		modelMap.put(NormalExcelConstants.CLASS, ZxbMoneyInRecModel.class);
 		ExportParams ep = new ExportParams("Exctl导出信息列表", "导出人:ZTF", "导出信息");
@@ -138,14 +167,15 @@ public class GeneralController {
 
 	/**
 	 * @Title: exportOutXls @Description: 自定义Excel导出 @see
-	 *         http://localhost:8080/mavApiSerNoDB/general/exportOutXls.
-	 *         do @param @param request @param @param
-	 *         modelMap @param @return @param @throws Exception @return
-	 *         String @throws
+	 *         http://localhost:8080/mavApiSerNoDB/general/exportOutXls. do @param @param
+	 *         request @param @param modelMap @param @return @param @throws
+	 *         Exception @return String @throws
 	 */
 	@RequestMapping(value = "/exportOutXls")
-	public String exportOutXls(HttpServletRequest request, ModelMap modelMap) throws Exception {
-		List<ZxbMoneyOutRecModel> incomes = this.generalService.exportOutXls(request);
+	public String exportOutXls(HttpServletRequest request, ModelMap modelMap)
+			throws Exception {
+		List<ZxbMoneyOutRecModel> incomes = this.generalService
+				.exportOutXls(request);
 		modelMap.put(NormalExcelConstants.FILE_NAME, "自定义Excel导出信息");
 		modelMap.put(NormalExcelConstants.CLASS, ZxbMoneyOutRecModel.class);
 		ExportParams ep = new ExportParams("自定义Excel信息列表", "导出人:ZTF", "导出信息");
@@ -165,7 +195,8 @@ public class GeneralController {
 	 * @Description:
 	 */
 	@RequestMapping(value = "/home")
-	public String home(HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String home(HttpServletRequest request,
+			HttpServletResponse response, Model model) {
 		try {
 			model.addAttribute("liming", "好了");
 			// HmAppProductMgEntity entity =
@@ -185,7 +216,8 @@ public class GeneralController {
 	 * @Description:
 	 */
 	@RequestMapping(value = "bootStarpTest")
-	public String bootStarpTest(HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String bootStarpTest(HttpServletRequest request,
+			HttpServletResponse response, Model model) {
 		model.addAttribute("bsTest", "bs学习");
 		return "bootstarp/head";
 	}
@@ -200,7 +232,8 @@ public class GeneralController {
 	 * @Description:
 	 */
 	@RequestMapping(value = "/list")
-	public String list(HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String list(HttpServletRequest request,
+			HttpServletResponse response, Model model) {
 		try {
 			model.addAttribute("liming", "好了");
 			// HmAppProductMgEntity entity =
@@ -225,7 +258,8 @@ public class GeneralController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "findList", method = RequestMethod.POST)
-	public Object findList(HttpServletRequest request, HttpServletResponse response, Model model, Integer page,
+	public Object findList(HttpServletRequest request,
+			HttpServletResponse response, Model model, Integer page,
 			Integer rows) {
 		JSONObject result = new JSONObject();
 		try {
@@ -261,11 +295,14 @@ public class GeneralController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "getAllParam")
-	public Object getAllParam(HttpServletRequest request, HttpServletResponse response,
+	public Object getAllParam(
+			HttpServletRequest request,
+			HttpServletResponse response,
 			@RequestParam(required = false, defaultValue = "1") Integer page, // 第几页
 			@RequestParam(required = false, defaultValue = "10") Integer rows, // 页数大小
 			@RequestParam(required = false, defaultValue = "") String paramName,
-			@RequestParam(required = false, defaultValue = "") String createTime) throws IOException {
+			@RequestParam(required = false, defaultValue = "") String createTime)
+			throws IOException {
 		JSONObject params = new JSONObject();
 		params.put("pageSize", rows);
 		params.put("pageIndex", (page - 1) * rows);
