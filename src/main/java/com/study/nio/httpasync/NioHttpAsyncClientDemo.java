@@ -137,7 +137,7 @@ public class NioHttpAsyncClientDemo {
 
 	private static CloseableHttpAsyncClient httpAsyncClient;
 
-	public NioHttpAsyncClientDemo() throws IOReactorException {
+	public NioHttpAsyncClientDemo() throws Exception {
 		ConnectingIOReactor ioReactor = new DefaultConnectingIOReactor();
 		PoolingNHttpClientConnectionManager cm = new PoolingNHttpClientConnectionManager(ioReactor);
 		cm.setMaxTotal(100);

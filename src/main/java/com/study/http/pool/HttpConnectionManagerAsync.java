@@ -2,14 +2,16 @@ package com.study.http.pool;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
 
@@ -17,7 +19,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
@@ -32,24 +33,45 @@ import org.apache.http.message.BasicNameValuePair;
 
 /**
  * 
- * @Title: HttpConnectionManager
- * @Description:线程安全 待解决
+ * @ClassName: HttpConnectionManagerAsync
+ * @Description:连接池，线程安全版
  * @see http://www.cnblogs.com/likaitai/p/5431246.html
- * @Author: zhaotf
- * @Since:2017年10月24日 下午3:08:03
- * @Version:1.0
+ * @author: zhaotf
+ * @date: 2017年10月24日 下午8:00:32
  */
-public class HttpConnectionManager {
+public class HttpConnectionManagerAsync {
 
 	public static void main(String[] args) {
-		HttpConnectionManager hcm = new HttpConnectionManager();
-		String url = "http://127.0.0.1:8080/spring-boot-tomcat-jsp/hmBase/postNioHttpAsync.do";
-		Map<String, String> params = new HashMap<String, String>();
+		final HttpConnectionManagerAsync hcm = new HttpConnectionManagerAsync();
+		ExecutorService es = Executors.newCachedThreadPool();
+		final String url = "http://127.0.0.1:8080/spring-boot-tomcat-jsp/hmBase/postNioHttpAsync.do";
 
-		params.put("city", "大湖");
-		params.put("code", "datc");
-		String rslt = hcm.postApply(url, params);
-		System.out.println("结果:" + rslt);
+		for (int i = 0; i < 50; i++) {
+			es.execute(new Runnable() {
+
+				@Override
+				public void run() {
+					Map<String, String> params = new HashMap<String, String>();
+
+					params.put("city", Thread.currentThread().getId() + "大湖");
+					params.put("code", System.currentTimeMillis() + "datc");
+					System.out.println(Thread.currentThread().getId()
+							+ ":发送参数:" + params.toString());
+					String rslt = hcm.postApply(url, params);
+					System.out.println(Thread.currentThread().getId() + ":结果:"
+							+ rslt);
+				}
+			});
+		}
+
+		hcm.clientPool.closeExpiredConnections();// 关闭过期的连接
+		hcm.clientPool.closeIdleConnections(30, TimeUnit.SECONDS); // 可选的,关闭30秒内不活动的连接
+		Scanner sca = new Scanner(System.in);
+		while (!"q".equals(sca.nextLine())) {
+		}
+		es.shutdown();
+		System.out.println("测试结束......");
+
 	}
 
 	PoolingHttpClientConnectionManager clientPool = null;// 连接池
@@ -80,7 +102,7 @@ public class HttpConnectionManager {
 			// 作用就是将用完的连接释放，下次请求可以复用，这里特别注意的是，如果不使用in.close();而仅仅使用response.close();
 			// 结果就是连接会被关闭，并且不能被复用，这样就失去了采用连接池的意义。
 			in.close();
-			System.out.println(rslt);
+			System.out.println(rslt + ":" + httpClient.hashCode());
 			return rslt;
 		} catch (UnsupportedOperationException e) {
 			e.printStackTrace();
@@ -98,7 +120,7 @@ public class HttpConnectionManager {
 		return null;
 	}
 
-	public HttpConnectionManager() {
+	public HttpConnectionManagerAsync() {
 		LayeredConnectionSocketFactory sslsf = null;
 		try {
 			sslsf = new SSLConnectionSocketFactory(SSLContext.getDefault());
@@ -111,8 +133,8 @@ public class HttpConnectionManager {
 				.register("http", new PlainConnectionSocketFactory()).build();
 		clientPool = new PoolingHttpClientConnectionManager(
 				socketFactoryRegistry);
-		clientPool.setMaxTotal(200);
-		clientPool.setDefaultMaxPerRoute(20);
+		clientPool.setMaxTotal(10);// 将最大连接数增加
+		clientPool.setDefaultMaxPerRoute(10);// 将每个路由基础的连接增加
 	}
 
 	public CloseableHttpClient getHttpClient() {
