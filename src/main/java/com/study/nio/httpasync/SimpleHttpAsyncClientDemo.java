@@ -8,7 +8,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
@@ -111,8 +110,7 @@ public class SimpleHttpAsyncClientDemo {
 			trustStore.load(instream, keyStorepass.toCharArray());
 			// 相信自己的CA和所有自签名的证书
 			sc = SSLContexts.custom().loadTrustMaterial(trustStore, new TrustSelfSignedStrategy()).build();
-		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException
-				| KeyManagementException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			try {

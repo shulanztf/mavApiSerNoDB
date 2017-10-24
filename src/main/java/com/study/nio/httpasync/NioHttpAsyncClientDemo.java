@@ -153,8 +153,9 @@ public class NioHttpAsyncClientDemo {
 	 * @throws IOReactorException
 	 * @throws UnsupportedEncodingException
 	 */
-	public void postNio(String url, Map<String, String> map, RoakbalkHanlder hand) throws Exception {
-		HttpPost httpPost = new HttpPost(url);
+	public void postNio(String url, final Map<String, String> map, final RoakbalkHanlder hand) throws Exception {
+		final HttpPost httpPost = new HttpPost(url);
+		// 设置参数
 		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 		if (map != null) {
 			for (Entry<String, String> entry : map.entrySet()) {
@@ -236,7 +237,7 @@ public class NioHttpAsyncClientDemo {
 	 */
 	@Deprecated
 	public void postNio2(String url, Map<String, String> map) throws Exception {
-		HttpPost httpPost = new HttpPost(url);
+		final HttpPost httpPost = new HttpPost(url);
 		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 		if (map != null) {
 			for (Entry<String, String> entry : map.entrySet()) {
