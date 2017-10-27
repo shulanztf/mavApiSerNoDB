@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -44,31 +45,38 @@ public class HttpConnectionManagerAsync {
 	public static void main(String[] args) {
 		final HttpConnectionManagerAsync hcm = new HttpConnectionManagerAsync();
 		ExecutorService es = Executors.newCachedThreadPool();
-		final String url = "http://127.0.0.1:8080/spring-boot-tomcat-jsp/hmBase/postNioHttpAsync.do";
+		final String url = "http://127.0.0.1:8080/zhenxinbang/v1/channel/ios/idIdentifyController/IDIdentify.html";
+		final CountDownLatch latch = new CountDownLatch(1);
 
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 3; i++) {
 			es.execute(new Runnable() {
 
 				@Override
 				public void run() {
 					Map<String, String> params = new HashMap<String, String>();
-
-					params.put("city", Thread.currentThread().getId() + "大湖");
-					params.put("code", System.currentTimeMillis() + "datc");
-					System.out.println(Thread.currentThread().getId()
-							+ ":发送参数:" + params.toString());
+					params.put("token", "5aae6ab7bdb54f6cada190dec02d1f87");
+					params.put("userId", "15153257041957f");
+					System.out.println(Thread.currentThread().getId() + ":发送参数:" + params.toString());
+					try {
+						latch.await();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 					String rslt = hcm.postApply(url, params);
-					System.out.println(Thread.currentThread().getId() + ":结果:"
-							+ rslt);
+					System.out.println(Thread.currentThread().getId() + ":结果:" + rslt);
 				}
 			});
 		}
-
-		hcm.clientPool.closeExpiredConnections();// 关闭过期的连接
-		hcm.clientPool.closeIdleConnections(30, TimeUnit.SECONDS); // 可选的,关闭30秒内不活动的连接
+		try {
+			Thread.sleep(1000 * 1);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		latch.countDown();
 		Scanner sca = new Scanner(System.in);
 		while (!"q".equals(sca.nextLine())) {
 		}
+		sca.close();
 		es.shutdown();
 		System.out.println("测试结束......");
 
@@ -88,8 +96,7 @@ public class HttpConnectionManagerAsync {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();// 参数用
 		if (args != null) {
 			for (Entry<String, String> entry : args.entrySet()) {
-				params.add(new BasicNameValuePair(entry.getKey(), entry
-						.getValue()));
+				params.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
 			}
 		}
 
@@ -128,18 +135,18 @@ public class HttpConnectionManagerAsync {
 			e.printStackTrace();
 		}
 
-		Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder
-				.<ConnectionSocketFactory> create().register("https", sslsf)
-				.register("http", new PlainConnectionSocketFactory()).build();
-		clientPool = new PoolingHttpClientConnectionManager(
-				socketFactoryRegistry);
-		clientPool.setMaxTotal(10);// 将最大连接数增加
-		clientPool.setDefaultMaxPerRoute(10);// 将每个路由基础的连接增加
+		Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory> create()
+				.register("https", sslsf).register("http", new PlainConnectionSocketFactory()).build();
+		clientPool = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+		clientPool.setMaxTotal(5);// 将最大连接数增加
+		clientPool.setDefaultMaxPerRoute(5);// 将每个路由基础的连接增加
+
+		clientPool.closeExpiredConnections();// 关闭过期的连接
+		clientPool.closeIdleConnections(30, TimeUnit.SECONDS); // 可选的,关闭30秒内不活动的连接
 	}
 
 	public CloseableHttpClient getHttpClient() {
-		CloseableHttpClient httpClient = HttpClients.custom()
-				.setConnectionManager(clientPool).build();
+		CloseableHttpClient httpClient = HttpClients.custom().setConnectionManager(clientPool).build();
 		// 如果不采用连接池就是这种方式获取连接
 		// CloseableHttpClient httpClient = HttpClients.createDefault();
 		return httpClient;
