@@ -56,14 +56,16 @@ public class HttpConnectionManagerAsync {
 					Map<String, String> params = new HashMap<String, String>();
 					params.put("token", "5aae6ab7bdb54f6cada190dec02d1f87");
 					params.put("userId", "15153257041957f");
-					System.out.println(Thread.currentThread().getId() + ":发送参数:" + params.toString());
+					System.out.println(Thread.currentThread().getId()
+							+ ":发送参数:" + params.toString());
 					try {
 						latch.await();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 					String rslt = hcm.postApply(url, params);
-					System.out.println(Thread.currentThread().getId() + ":结果:" + rslt);
+					System.out.println(Thread.currentThread().getId() + ":结果:"
+							+ rslt);
 				}
 			});
 		}
@@ -82,7 +84,7 @@ public class HttpConnectionManagerAsync {
 
 	}
 
-	PoolingHttpClientConnectionManager clientPool = null;// 连接池
+	private static PoolingHttpClientConnectionManager clientPool = null;// 连接池
 
 	/**
 	 * post请求
@@ -96,7 +98,8 @@ public class HttpConnectionManagerAsync {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();// 参数用
 		if (args != null) {
 			for (Entry<String, String> entry : args.entrySet()) {
-				params.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+				params.add(new BasicNameValuePair(entry.getKey(), entry
+						.getValue()));
 			}
 		}
 
@@ -135,9 +138,11 @@ public class HttpConnectionManagerAsync {
 			e.printStackTrace();
 		}
 
-		Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory> create()
-				.register("https", sslsf).register("http", new PlainConnectionSocketFactory()).build();
-		clientPool = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+		Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder
+				.<ConnectionSocketFactory> create().register("https", sslsf)
+				.register("http", new PlainConnectionSocketFactory()).build();
+		clientPool = new PoolingHttpClientConnectionManager(
+				socketFactoryRegistry);
 		clientPool.setMaxTotal(5);// 将最大连接数增加
 		clientPool.setDefaultMaxPerRoute(5);// 将每个路由基础的连接增加
 
@@ -145,8 +150,10 @@ public class HttpConnectionManagerAsync {
 		clientPool.closeIdleConnections(30, TimeUnit.SECONDS); // 可选的,关闭30秒内不活动的连接
 	}
 
-	public CloseableHttpClient getHttpClient() {
-		CloseableHttpClient httpClient = HttpClients.custom().setConnectionManager(clientPool).build();
+	public static CloseableHttpClient getHttpClient() {
+		new HttpConnectionManagerAsync();
+		CloseableHttpClient httpClient = HttpClients.custom()
+				.setConnectionManager(clientPool).build();
 		// 如果不采用连接池就是这种方式获取连接
 		// CloseableHttpClient httpClient = HttpClients.createDefault();
 		return httpClient;

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.annotation.PostConstruct;
 import javax.net.ssl.SSLContext;
 
 import org.apache.commons.io.IOUtils;
@@ -113,6 +114,29 @@ public class HttpConnectionManager {
 				socketFactoryRegistry);
 		clientPool.setMaxTotal(200);
 		clientPool.setDefaultMaxPerRoute(20);
+	}
+
+	/**
+	 * 实例化连接池，加载spring容器时进行
+	 * 
+	 */
+	@PostConstruct
+	public void instancePool() {
+		try {
+			LayeredConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+					SSLContext.getDefault());
+			Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder
+					.<ConnectionSocketFactory> create()
+					.register("https", sslsf)
+					.register("http", new PlainConnectionSocketFactory())
+					.build();
+			clientPool = new PoolingHttpClientConnectionManager(
+					socketFactoryRegistry);
+			clientPool.setMaxTotal(200);
+			clientPool.setDefaultMaxPerRoute(20);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public CloseableHttpClient getHttpClient() {
