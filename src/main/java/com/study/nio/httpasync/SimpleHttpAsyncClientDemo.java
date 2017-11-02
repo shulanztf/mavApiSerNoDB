@@ -199,8 +199,8 @@ public class SimpleHttpAsyncClientDemo {
 		// 设置连接池大小
 		ConnectingIOReactor ioReactor;
 		ioReactor = new DefaultConnectingIOReactor(ioReactorConfig);
-		PoolingNHttpClientConnectionManager connManager = new PoolingNHttpClientConnectionManager(ioReactor, null,
-				sessionStrategyRegistry, null);
+		PoolingNHttpClientConnectionManager connManager = new PoolingNHttpClientConnectionManager(ioReactor,
+				sessionStrategyRegistry);
 
 		// 创建自定义的httpclient对象
 		client = proxy("127.0.0.1", 8087).setConnectionManager(connManager).build();
