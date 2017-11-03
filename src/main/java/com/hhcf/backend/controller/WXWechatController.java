@@ -29,7 +29,7 @@ import com.hhcf.util.SignUtil;
 @Controller
 @RequestMapping("/wXWechat")
 public class WXWechatController {
-	@Value("${DNBX_TOKEN}")
+	@Value("${dnbx_token}")
 	private String DNBX_TOKEN;
 
 	private static final Logger LOGGER = Logger.getLogger(WXWechatController.class);

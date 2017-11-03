@@ -156,7 +156,15 @@
 	<bean id="jeecgTemplateWordView" class="org.jeecgframework.poi.excel.view.JeecgTemplateWordView" />
 	<bean id="jeecgMapExcelView" class="org.jeecgframework.poi.excel.view.JeecgMapExcelView" />
 
-
+	<!-- value标签
+	<bean id="hmProperty" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<array>
+				<value>classpath:messages.properties</value>
+			</array>
+		</property>
+	</bean>
+	 -->
 
 	<mvc:annotation-driven />
 </beans> 

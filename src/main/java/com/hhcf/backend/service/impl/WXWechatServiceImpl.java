@@ -6,6 +6,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hhcf.backend.model.TextMessage;
 import com.hhcf.backend.service.WXWechatService;
@@ -21,6 +23,8 @@ import com.hhcf.util.MessageUtil;
  * @Since:2017年10月31日 上午8:22:19
  * @Version:1.0
  */
+@Service("wXWechatService")
+@Transactional
 public class WXWechatServiceImpl implements WXWechatService {
 	private static Logger logger = Logger.getLogger(WXWechatServiceImpl.class);
 

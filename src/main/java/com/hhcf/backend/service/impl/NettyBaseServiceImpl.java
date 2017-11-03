@@ -28,7 +28,7 @@ public class NettyBaseServiceImpl implements NettyBaseService {
 	/**
 	 * 服务端监听的端口地址
 	 */
-	private static final int portNumber = 8080;
+	private static final int portNumber = 8980;
 
 	// 自动装备变量，spring会根据名字或者类型来装备这个变量，注解方式不需要set get方法了
 	@Autowired
@@ -46,29 +46,29 @@ public class NettyBaseServiceImpl implements NettyBaseService {
 		return "aaaccccccccccccsssssssssss";
 	}
 
-	// 程序初始方法入口注解，提示spring这个程序先执行这里
-	@PostConstruct
-	public void serverStart() throws InterruptedException {
-		EventLoopGroup bossGroup = new NioEventLoopGroup();
-		EventLoopGroup workerGroup = new NioEventLoopGroup();
-		try {
-			ServerBootstrap b = new ServerBootstrap();
-			b.group(bossGroup, workerGroup);
-			b.channel(NioServerSocketChannel.class);
-			b.childHandler(helloServerInitializer);
-
-			// 服务器绑定端口监听
-			ChannelFuture f = b.bind(portNumber).sync();
-			// 监听服务器关闭监听
-			f.channel().closeFuture().sync();
-
-			log.info("###########################################");
-			// 可以简写为
-			/* b.bind(portNumber).sync().channel().closeFuture().sync(); */
-		} finally {
-			bossGroup.shutdownGracefully();
-			workerGroup.shutdownGracefully();
-		}
-	}
+//	// 程序初始方法入口注解，提示spring这个程序先执行这里
+//	@PostConstruct
+//	public void serverStart() throws InterruptedException {
+//		EventLoopGroup bossGroup = new NioEventLoopGroup();
+//		EventLoopGroup workerGroup = new NioEventLoopGroup();
+//		try {
+//			ServerBootstrap b = new ServerBootstrap();
+//			b.group(bossGroup, workerGroup);
+//			b.channel(NioServerSocketChannel.class);
+//			b.childHandler(helloServerInitializer);
+//
+//			// 服务器绑定端口监听
+//			ChannelFuture f = b.bind(portNumber).sync();
+//			// 监听服务器关闭监听
+//			f.channel().closeFuture().sync();
+//
+//			log.info("###########################################");
+//			// 可以简写为
+//			/* b.bind(portNumber).sync().channel().closeFuture().sync(); */
+//		} finally {
+//			bossGroup.shutdownGracefully();
+//			workerGroup.shutdownGracefully();
+//		}
+//	}
 
 }
