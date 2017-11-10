@@ -78,9 +78,7 @@
 		<property name="defaultEncoding" value="UTF-8" />
 		<property name="cacheSeconds" value="60" />
 	</bean>
-	<!--注册Bean验证后处理器
-	<bean class="org.springframework.validation.beanvalidation.BeanValidationPostProcessor"/>  
-	-->  
+	<!--注册Bean验证后处理器 <bean class="org.springframework.validation.beanvalidation.BeanValidationPostProcessor"/> -->
 
 
 
@@ -151,20 +149,19 @@
 	<bean id="jeecgExcelView" class="org.ztfframework.poi.excel.view.ZtfJeecgSingleExcelView" />
 	<bean id="jeecgTemplateExcelView"
 		class="org.ztfframework.poi.excel.view.HhcfJeecgSingleExcelView" />
-	<!-- <bean id="jeecgExcelView" class="org.jeecgframework.poi.excel.view.JeecgSingleExcelView" 
-		/> -->
 	<bean id="jeecgTemplateWordView" class="org.jeecgframework.poi.excel.view.JeecgTemplateWordView" />
 	<bean id="jeecgMapExcelView" class="org.jeecgframework.poi.excel.view.JeecgMapExcelView" />
 
-	<!-- value标签
-	<bean id="hmProperty" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<!-- value标签 -->
+	<bean id="hmProperty"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<array>
 				<value>classpath:messages.properties</value>
+				<value>classpath:solr.properties</value>
 			</array>
 		</property>
 	</bean>
-	 -->
 
 	<mvc:annotation-driven />
 </beans> 

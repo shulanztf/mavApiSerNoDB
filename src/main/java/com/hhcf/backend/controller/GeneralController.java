@@ -16,6 +16,7 @@ import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.enmus.ExcelType;
 import org.jeecgframework.poi.excel.entity.vo.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.vo.TemplateExcelConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,8 +29,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSON;
 import com.hhcf.backend.model.HmAppProductMgEntity;
 import com.hhcf.backend.model.TestModel;
+import com.hhcf.backend.model.UserEntity;
 import com.hhcf.backend.model.ZxbMoneyInRecModel;
 import com.hhcf.backend.model.ZxbMoneyOutRecModel;
+import com.hhcf.backend.service.BaseSolr;
 import com.hhcf.backend.service.GeneralService;
 import com.hhcf.backend.service.NettyBaseService;
 
@@ -53,6 +56,20 @@ public class GeneralController {
 	private NettyBaseService nettyBaseService;
 	@Value("${items.createtime.isNull}")
 	private String msg;
+	@Autowired
+	private BaseSolr baseSolr;
+
+	/**
+	 * @see {@link http://localhost:8080/mavApiSerNoDB/general/getSolrUer.do}
+	 * @param id
+	 */
+	@RequestMapping("/getSolrUer")
+	@ResponseBody
+	public Object getSolrUer(String id) throws Exception {
+		UserEntity user = baseSolr.getUser(id);
+		logger.info("solr查询:" + id + "," + JSON.toJSONString(user));
+		return user;
+	}
 
 	/**
 	 * @see {@link http://localhost:8080/mavApiSerNoDB/general/getNettyMsg.do}
