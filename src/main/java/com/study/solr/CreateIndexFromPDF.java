@@ -28,8 +28,8 @@ public class CreateIndexFromPDF {
 	}
 
 	private static HttpSolrClient solrClient;
-//	private static String url = "http://localhost:8983/solr/hmlcdb_user";
-	private static String url = "http://localhost:8983/solr";
+	private static String url = "http://localhost:8983/solr/hmlcdb_user";
+//	private static String url = "http://localhost:8983/solr";
 
 	/**
 	 * 从文件创建索引 <功能详细描述>
