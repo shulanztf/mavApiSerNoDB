@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="2" guice-stage="DEVELOPMENT" name="Failed suite [Test-method Suite]" parallel="methods">
+  <test name="Test-method test" group-by-instances="true">
+    <classes>
+      <class name="com.howtodoinjava.parallelism.ParallelMethodTest"/>
+    </classes>
+  </test> <!-- Test-method test -->
+</suite> <!-- Failed suite [Test-method Suite] -->

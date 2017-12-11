@@ -86,13 +86,13 @@
 
 		<spring.version>4.2.9.RELEASE</spring.version>
 		<spring.security.version>3.2.10.RELEASE</spring.security.version>
-		<cxf.version>3.0.2</cxf.version>
+		<protostuff.version>1.1.1</protostuff.version>
 		<jackson.version>1.8.4</jackson.version>
 		<jacksonframework.version>1.84</jacksonframework.version>
 		<json-lib.version>2.1</json-lib.version>
 		<fastjson-lib.version>1.2.6</fastjson-lib.version>
-		<poi.version>3.9</poi.version>
-		<antlr.version>3.3</antlr.version>
+		<slf4j.version>1.7.21</slf4j.version>
+		<fasterxml.jackson.version>2.8.8</fasterxml.jackson.version>
 		<openoffice.version>3.2.1</openoffice.version>
 		<jodconverter.version>3.0-beta-4</jodconverter.version>
 		<xwork-core.version>2.1.6</xwork-core.version>
@@ -320,12 +320,12 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.6.1</version>
+			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.6.1</version>
+			<version>${slf4j.version}</version>
 		</dependency>
 		<!-- log4j end -->
 
@@ -358,45 +358,21 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.8.0</version>
+			<version>${fasterxml.jackson.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.8.0</version>
+			<version>${fasterxml.jackson.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
-			<version>2.8.0</version>
+			<version>${fasterxml.jackson.version}</version>
 		</dependency>
 		<!-- json包 end -->
 
-		<!-- pdf转换包 start -->
-		<dependency>
-			<groupId>org.xhtmlrenderer</groupId>
-			<artifactId>flying-saucer-pdf-itext5</artifactId>
-			<version>9.0.6</version>
-		</dependency>
-		<dependency>
-			<groupId>org.xhtmlrenderer</groupId>
-			<artifactId>flying-saucer-pdf</artifactId>
-			<version>9.0.6</version>
-		</dependency>
-		<!-- pdf转换包 end -->
-
 		<!-- 杂类 start -->
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-frontend-jaxws</artifactId>
-			<version>${cxf.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-transports-http</artifactId>
-			<version>${cxf.version}</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-solrj</artifactId>
@@ -415,14 +391,8 @@
 			<artifactId>jackson-core-asl</artifactId>
 			<version>${jackson.version}</version>
 		</dependency>
-		<!-- 
-		<dependency>
-			<groupId>net.sf.json-lib</groupId>
-			<artifactId>json-lib</artifactId>
-			<version>${json-lib.version}</version>
-			<classifier>jdk15</classifier>
-		</dependency>
-		 -->
+		<!-- <dependency> <groupId>net.sf.json-lib</groupId> <artifactId>json-lib</artifactId> 
+			<version>${json-lib.version}</version> <classifier>jdk15</classifier> </dependency> -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
@@ -458,50 +428,6 @@
 		</dependency>
 		<!-- rpc thrift end -->
 
-		<!-- poi start -->
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi</artifactId>
-			<version>${poi.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi-ooxml</artifactId>
-			<version>${poi.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi-ooxml-schemas</artifactId>
-			<version>${poi.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi-scratchpad</artifactId>
-			<version>${poi.version}</version>
-		</dependency>
-		<!-- poi end -->
-
-		<!-- openoffice start -->
-		<dependency>
-			<groupId>org.openoffice</groupId>
-			<artifactId>juh</artifactId>
-			<version>${openoffice.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.openoffice</groupId>
-			<artifactId>unoil</artifactId>
-			<version>${openoffice.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.openoffice</groupId>
-			<artifactId>jurt</artifactId>
-			<version>${openoffice.version}</version>
-		</dependency>
-		<!-- java的OpenDucument文件转换器，它利用OpenOffice来进行转换工作 <dependency> <groupId>org.artofsolving</groupId> 
-			<artifactId>jodconverter</artifactId> <version>${jodconverter.version}</version> 
-			</dependency> -->
-		<!-- openoffice end -->
-
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
@@ -511,12 +437,6 @@
 			<groupId>com.opensymphony</groupId>
 			<artifactId>xwork-core</artifactId>
 			<version>${xwork-core.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<version>6.9.10</version>
 		</dependency>
 
 		<dependency>
@@ -620,6 +540,51 @@
 		</dependency>
 		<!-- springmvc数据校验 end -->
 
+
+		<!-- 序列化start -->
+		<dependency>
+			<groupId>com.dyuproject.protostuff</groupId>
+			<artifactId>protostuff-json</artifactId>
+			<version>${protostuff.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.dyuproject.protostuff</groupId>
+			<artifactId>protostuff-collectionschema</artifactId>
+			<version>${protostuff.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.dyuproject.protostuff</groupId>
+			<artifactId>protostuff-api</artifactId>
+			<version>${protostuff.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.dyuproject.protostuff</groupId>
+			<artifactId>protostuff-runtime</artifactId>
+			<version>${protostuff.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.dyuproject.protostuff</groupId>
+			<artifactId>protostuff-core</artifactId>
+			<version>${protostuff.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.objenesis</groupId>
+			<artifactId>objenesis</artifactId>
+			<version>2.5</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.objenesis</groupId>
+			<artifactId>objenesis-tck</artifactId>
+			<version>2.5</version>
+		</dependency>
+
+
+
+		<!-- 序列化end -->
+
+
 	</dependencies>
 
 
@@ -632,18 +597,18 @@
 				<artifactId>mavApiSerNoDB</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>3.5.1</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.8</source>
+					<target>1.8</target>
 					<encoding>utf8</encoding>
 				</configuration>
 			</plugin>
